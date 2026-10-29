@@ -1,0 +1,2 @@
+// Apply the saved preference before rendering the page to prevent a theme flash.
+(function(){let theme;try{theme=localStorage.getItem('six7-theme')}catch(e){}if(theme!=='light'&&theme!=='dark'){theme=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'}document.documentElement.dataset.theme=theme;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==='light'?'#f4f2eb':'#242527'})();

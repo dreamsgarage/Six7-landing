@@ -1,0 +1,12 @@
+{
+  "name": "six7-landing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Six7 English and Spanish landing page, ready for Netlify",
+  "scripts": {
+    "build": "python3 build.py && python3 scripts/check_site.py",
+    "check": "python3 scripts/check_site.py",
+    "dev": "python3 -m http.server 8000 --directory dist"
+  },
+  "engines": { "node": ">=24 <25" }
+}

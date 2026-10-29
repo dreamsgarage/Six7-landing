@@ -1,0 +1,22 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+  PYTHON_VERSION = "3.12"
+
+[build.processing.html]
+  pretty_urls = true
+
+[context.deploy-preview]
+  command = "npm run build"
+
+[context.branch-deploy]
+  command = "npm run build"
+
+[dev]
+  command = "python3 -m http.server 8000 --directory dist"
+  targetPort = 8000
+  publish = "dist"
+  autoLaunch = false
