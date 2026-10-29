@@ -11,10 +11,11 @@ root=Path(__file__).resolve().parent.parent
 output=root/'dist'
 class Page(HTMLParser):
  def __init__(self):
-  super().__init__();self.links=[];self.ids=set();self.lang=None
+  super().__init__();self.links=[];self.ids=set();self.lang=None;self.forms=[]
  def handle_starttag(self,tag,attrs):
   a=dict(attrs)
   if tag=='html':self.lang=a.get('lang')
+  if tag=='form':self.forms.append(a)
   if 'id' in a:self.ids.add(a['id'])
   for key in ('href','src'):
    if a.get(key):self.links.append(a[key])
@@ -23,6 +24,16 @@ for name,lang in (('index.html','en'),('es/index.html','es')):
  assert page.lang==lang,(name,'language')
  assert text.count('data-theme-choice=')==2,(name,'theme controls')
  assert 'solo-note' in page.ids,(name,'Gmail footnote')
+ assert f'/assets/six7-one-pager-{lang}.pdf' in text,(name,'localized PDF link')
+ assert 'six7-logo-light.png' in text,(name,'light theme logo')
+ assert text.count('Entangled Forge')==1,(name,'single build credit')
+ assert 'entangledforge.com' not in text.lower(),(name,'remove collaborator links')
+ assert len(page.forms)==1,(name,'one alpha interest form')
+ form=page.forms[0]
+ assert form.get('name')==f'six7-alpha-{lang}' and form.get('method')=='POST' and form.get('data-netlify')=='true',(name,'Netlify form declaration')
+ assert form.get('netlify-honeypot')=='bot-field',(name,'honeypot field')
+ assert (output/form['action'].lstrip('/')/'index.html').is_file(),(name,'localized form success route')
+ assert '<a class="story-art"' not in text,(name,'Story should use the new proposal')
  assert '{{' not in text and '[contact email]' not in text,(name,'unresolved copy')
  data=re.search(r'<script id="app-data" type="application/json">(.*?)</script>',text,re.S)
  assert len(json.loads(data.group(1))['names'])==4,(name,'four apps')
@@ -40,6 +51,9 @@ for script in (output/'static').glob('*.js'):
 for file in ('404.html','_headers','_redirects','robots.txt','sitemap.xml'):
  assert (output/file).is_file(),file
 ET.parse(output/'sitemap.xml')
+for lang in ('en','es'):
+ assert (output/'assets'/f'six7-one-pager-{lang}.pdf').read_bytes().startswith(b'%PDF-'),lang
+assert (output/'assets/six7-one-pager-en.pdf').read_bytes()!=(output/'assets/six7-one-pager-es.pdf').read_bytes(),'Separate language PDFs must be distinct'
 config=tomllib.loads((root/'netlify.toml').read_text())
 assert config['build']['publish']=='dist'
 assert config['build']['command']=='npm run build'

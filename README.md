@@ -1,6 +1,6 @@
 # Six7 landing page
 
-English and Spanish site for Six7, an Entangled Forge product division. Prepared for Netlify continuous deployment from this repository. No DNS setup is needed to launch on a Netlify-generated address.
+English and Spanish site for Six7. Prepared for Netlify continuous deployment from this repository. No DNS setup is needed to launch on a Netlify-generated address.
 
 ## What is included
 
@@ -8,8 +8,8 @@ English and Spanish site for Six7, an Entangled Forge product division. Prepared
 - Accessible light/dark selection, following the device preference initially and remembering manual selection across languages.
 - CRM, Kanban, Service Desk and C&P app sections with space for future mockups.
 - Bilingual footnotes: CRM and Kanban will be tested with personal Gmail accounts for solo businesses. Compatibility is not yet validated.
-- Original one-pager PDF, editable HTML packages and five original brand/story artworks.
-- Entangled Forge collaboration, founder story, and the Claude / Omarchy / repurposed seven-year-old notebook build story.
+- Separate English and Spanish A4 PDFs rendered from the supplied HTML, editable HTML packages and five original brand/story artworks.
+- Founder story and a single collaborator/build credit in the footer.
 
 ## Netlify deployment
 
@@ -63,6 +63,24 @@ python3 scripts/check_contexts.py
 - `scripts/check_contexts.py`: production and preview metadata checks.
 - `dist/assets/`: original artwork and downloadable materials.
 
-C&P currently follows the contract-register description in the supplied one-pager. Contact links currently lead to Entangled Forge. The downloadable documents remain the original supplied files, including original contact placeholders. The proposed transparent, theme-aware logo has not replaced the original brand artwork.
+C&P currently follows the contract-register description in the supplied one-pager. The site uses a compact alpha-interest form prepared for Netlify Forms. Enable form detection in Netlify before deployment. Requests appear in the Netlify Forms dashboard; email notifications require separate configuration. The new PDFs use Six7 alpha-programme text instead of the source contact placeholder and include the personal-Gmail testing footnote. Original HTML ZIP packages and the original bilingual PDF remain available as source/archive materials. The light-theme logo uses black Six lettering and a papaya 7 on transparency; the original artwork remains in the resource archive.
 
 All brand assets remain the property of their respective owner. Google Workspace is a trademark of Google LLC; Six7 is not affiliated with Google.
+
+## Regenerating the one-page PDFs
+
+Normal Netlify builds serve the checked-in PDFs and need no extra packages. For editorial PDF regeneration only, install `weasyprint==70.0` and a Helvetica-compatible sans-serif font (Nimbus Sans / Nimbus Sans Narrow were used for the verified export), then run:
+
+```sh
+python3 scripts/render_one_pagers.py
+```
+
+The source is `one-pagers/en.html` and `one-pagers/es.html`, adapted from the supplied HTML exports. `one-pagers/print.css` makes the exports fit one A4 page in each language. Review the rendered PDFs after edits.
+
+## Build credit
+
+Built in collaboration with Entangled Forge using Anthropic Claude and Omarchy on a repurposed seven-year-old notebook.
+
+## App mockups
+
+The received `(2).zip` files are English/Spanish one-pager exports, identical in content to the earlier exports. They do not contain the four app mockups. App preview panels remain labelled forthcoming until the app assets are supplied.

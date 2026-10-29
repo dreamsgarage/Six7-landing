@@ -14,7 +14,7 @@ for name in ('style.css','theme.js','app.js'):
  target=static/f'{stem}.{digest}.{extension}'
  target.write_bytes(source.read_bytes())
  mapping['/'+name]='/static/'+target.name
-for page in (output/'index.html',output/'es/index.html'):
+for page in output.rglob('index.html'):
  html=page.read_text()
  for old,new in mapping.items():
   html=html.replace('"'+old+'"','"'+new+'"')
