@@ -29,6 +29,11 @@ for name,lang in (('index.html','en'),('es/index.html','es')):
  assert 'Entangled Forge' in text and 'alt="Entangled Forge"' in text,(name,'collaboration story and original brand image')
  for logo in ('claude.svg','omarchy.svg','entangled-forge.webp'):
   assert (output/'assets'/'mockups'/logo).is_file(),(name,logo,'supplied logo missing')
+ for logo in ('claude-transparent-light.webp','claude-transparent-dark.webp','entangled-forge-transparent-light.webp','entangled-forge-transparent-dark.webp'):
+  file=output/'assets'/'mockups'/logo
+  data=file.read_bytes()
+  assert data[:4]==b'RIFF' and data[8:12]==b'WEBP',(name,logo,'theme-aware logo is not a valid WebP')
+ assert 'partner-light' in text and 'partner-dark' in text,(name,'both theme variants must appear')
  assert 'Commodore 64' in text and 'Claude' in text and 'Omarchy' in text,(name,'founder and build story')
  assert 'entangledforge.com' not in text.lower(),(name,'remove collaborator links')
  assert len(page.forms)==1,(name,'one alpha interest form')
