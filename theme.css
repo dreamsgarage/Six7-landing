@@ -53,33 +53,38 @@ html[data-theme=dark] .ef-brand{color:var(--paper)}
 @media(max-width:760px){.story-chapters{grid-template-columns:1fr;gap:25px;margin-top:34px}.story-chapter{padding-top:19px}.story-chapter p{font-size:14px}.story-lead{grid-template-columns:1fr;gap:24px}.story-numerals{font-size:clamp(92px,20vw,145px)}.app-panel{grid-template-columns:1fr;gap:24px;padding-top:25px}.app-copy{padding-top:0}.app-copy h3{font-size:30px}.preview-area{min-height:0}.wrap{width:min(100% - 36px,1240px)}section.section{padding:66px 0}.section-head{gap:22px}.tabs{grid-template-columns:repeat(4,minmax(0,1fr))}.tab{font-size:clamp(12px,3.2vw,16px);padding:13px 4px 13px 0}.tab .mono{font-size:9px}.collab-marks img{max-width:100px}}
 @media(max-width:390px){.collab-marks img{max-width:78px}.collab-heart{font-size:13px}.ef-brand{font-size:8px}.story-numerals{font-size:90px}.tabs{gap:4px}}
 
-/* Real supplied brand assets. Keep official letterforms intact and readable. */
-.collab-logo-row{
- display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
- gap:clamp(12px,2.1vw,26px);padding:26px 0 0;margin-top:clamp(20px,3vw,42px);
- border-top:1px solid var(--line);min-width:0
+/* Quiet brand credits, contained entirely within Story chapter 04.
+   Uses the supplied brand files without redrawing their marks. */
+.story-chapter--collab .collab-logo-row{
+ display:flex;align-items:center;justify-content:flex-start;
+ flex-direction:row;flex-wrap:nowrap;gap:clamp(4px,.55vw,7px);
+ width:100%;max-width:270px;min-width:0;margin:18px 0 0;
+ padding:0;border:0
 }
-.collab-logo-row .partner-logo{display:flex;align-items:center;justify-content:center;flex:none;min-width:0;line-height:0;text-decoration:none}
-.collab-logo-row .partner-logo img{display:block;object-fit:contain;width:auto;height:auto;max-width:none;max-height:none}
-.collab-logo-row .partner-claude{
- background:#23252a;border-radius:8px;padding:12px 17px;min-height:64px
+.story-chapter--collab .collab-logo-row .partner-logo{
+ display:inline-flex;align-items:center;justify-content:center;
+ flex:0 1 auto;min-width:0;line-height:0;padding:0;border:0;
+ background:none;text-decoration:none
 }
-.collab-logo-row .partner-claude img{width:178px}
-.collab-logo-row .partner-omarchy img{width:176px}
-.collab-logo-row .partner-ef img{width:108px;height:108px;object-fit:contain;border-radius:8px}
-.collab-logo-row .collab-heart{font-size:25px;color:#dd352a;line-height:1}
-html[data-theme=dark] .collab-logo-row{border-top-color:#ffffff30}
-@media(max-width:760px){
- .collab-logo-row{gap:14px;padding-top:24px}
- .collab-logo-row .partner-claude{padding:9px 12px;min-height:50px}
- .collab-logo-row .partner-claude img{width:145px}
- .collab-logo-row .partner-omarchy img{width:147px}
- .collab-logo-row .partner-ef img{width:88px;height:88px}
+.story-chapter--collab .collab-logo-row .partner-logo img{
+ display:block;object-fit:contain;height:auto;max-width:none;
+ max-height:none
 }
-@media(max-width:540px){
- .collab-logo-row{flex-direction:column;gap:10px}
- .collab-logo-row .partner-claude img{width:174px}
- .collab-logo-row .partner-omarchy img{width:164px}
- .collab-logo-row .partner-ef img{width:102px;height:102px}
- .collab-logo-row .collab-heart{font-size:18px}
+.story-chapter--collab .collab-logo-row .partner-claude{
+ flex:0 0 auto;background:#23252a;border-radius:3px;
+ padding:4px 6px
+}
+.story-chapter--collab .collab-logo-row .partner-claude img{width:62px}
+.story-chapter--collab .collab-logo-row .partner-omarchy img{width:77px}
+.story-chapter--collab .collab-logo-row .partner-ef img{
+ width:44px;height:44px;object-fit:cover;border-radius:4px
+}
+.story-chapter--collab .collab-logo-row .collab-heart{
+ flex:none;color:#ce382e;font-size:12px;line-height:1
+}
+@media(max-width:390px){
+ .story-chapter--collab .collab-logo-row{max-width:245px;gap:5px}
+ .story-chapter--collab .collab-logo-row .partner-claude img{width:58px}
+ .story-chapter--collab .collab-logo-row .partner-omarchy img{width:69px}
+ .story-chapter--collab .collab-logo-row .partner-ef img{width:40px;height:40px}
 }
