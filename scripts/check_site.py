@@ -26,7 +26,8 @@ for name,lang in (('index.html','en'),('es/index.html','es')):
  assert 'solo-note' in page.ids,(name,'Gmail footnote')
  assert f'/assets/six7-one-pager-{lang}.pdf' in text,(name,'localized PDF link')
  assert 'six7-logo-light.png' in text,(name,'light theme logo')
- assert 'Entangled Forge' not in text,(name,'no collaborator credit')
+ assert text.count('Entangled Forge')==1,(name,'one collaboration story reference')
+ assert 'Commodore 64' in text and 'Claude' in text and 'Omarchy' in text,(name,'founder and build story')
  assert 'entangledforge.com' not in text.lower(),(name,'remove collaborator links')
  assert len(page.forms)==1,(name,'one alpha interest form')
  form=page.forms[0]
