@@ -85,7 +85,7 @@ The four original application walkthroughs are supported directly from their sup
 - `mockup-sources/crm-cp.zip` — ZIP containing `crm/screens/*.png` and `cp/screens/*.png`.
 - `mockup-sources/desk-kanban.zip` — ZIP containing `sd/screens/*.png` and `kb/screens/*.png`.
 - `mockup-sources/claude.svg` — original Claude ivory logo.
-- `mockup-sources/omarchy.png` — original Omarchy pixel-style wordmark.
+- `mockup-sources/omarchy.svg` — original Omarchy pixel-style wordmark.
 
 The dependency-free Netlify build extracts only the screenshot PNGs safely into `dist/assets/mockups/`, keeps originals unchanged, and enables a screen-selection gallery in each application tab. Until the bundles are present it shows a minimal fallback rather than broken links. The same build displays the original Claude and Omarchy logos in the Story section when present.
 
