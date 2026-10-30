@@ -14,3 +14,14 @@ html[data-theme=light]{color-scheme:light}html[data-theme=light] .top,html[data-
 
 /* Collaboration marks: typographic stand-ins, not official brand artwork. */
 .collab-marks{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}.collab-marks a{display:inline-flex;align-items:center;gap:9px;border:1px solid currentColor;padding:8px 12px;font-weight:600;font-size:13px}.claude-mark{font-size:22px;color:#d97757}.omarchy-mark{font-size:22px;color:#b3a0f2}
+
+/* Source-mockup screen gallery, visible when original ZIPs are in mockup-sources/. */
+.preview-area.has-shots{display:flex;flex-direction:column;align-items:stretch;text-align:left;padding:0;overflow:hidden;background:var(--surface,#f5f3f8);border:1px solid var(--line)}
+.mockup-figure{margin:0;min-width:0}.mockup-figure img{display:block;width:100%;height:auto;aspect-ratio:1.44;object-fit:contain;object-position:top;background:#f8f7fc}
+.mockup-figure figcaption{font-size:12px;color:var(--muted);padding:10px 15px;font-weight:600}
+.mockup-navigation{display:flex;flex-wrap:wrap;gap:7px;padding:12px 15px 16px;border-top:1px solid var(--line)}
+.mockup-navigation button{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);padding:6px 10px;font-size:11px;cursor:pointer}
+.mockup-navigation button[aria-pressed=true]{background:var(--orange);border-color:var(--orange);color:white}
+.collab-marks img{display:block;width:auto;max-width:min(100%,170px);max-height:40px;object-fit:contain}
+html[data-theme=light] .collab-marks img[src$="claude.svg"]{background:#272525;padding:8px}
+@media(max-width:760px){.preview-area.has-shots{min-height:0}.mockup-navigation{gap:6px}.mockup-navigation button{font-size:10px}.collab-marks img{max-width:140px;max-height:34px}}
