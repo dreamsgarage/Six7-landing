@@ -96,7 +96,7 @@ for archive_name, app_keys in bundle_specs:
     target.parent.mkdir(parents=True,exist_ok=True)
     with z.open(info) as src, target.open('wb') as dst:
      shutil.copyfileobj(src,dst)
-for source, dest in [('claude.svg','claude.svg'),('omarchy.png','omarchy.png')]:
+for source, dest in [('claude.svg','claude.svg'),('omarchy.svg','omarchy.svg')]:
  if (mockup_root/source).is_file():
   shutil.copy2(mockup_root/source,asset_root/dest)
 app_screens=[
@@ -115,7 +115,7 @@ for lang,t in T.items():
  chips=''.join(f'<div class="app-chip"><span class="app-icon" aria-hidden="true">{["▤","▥","◎","≡"][i]}</span>{n}</div>' for i,n in enumerate(t['appnames']))
  benefits=''.join(f'<article class="benefit"><span class="mono">{n}</span><div><h3>{h}</h3><p>{p}</p></div></article>' for n,h,p in t['benefits'])
  claude_logo='<img src="/assets/mockups/claude.svg" alt="Claude" loading="lazy">' if (asset_root/'claude.svg').is_file() else '<span class="claude-mark" aria-hidden="true">✳</span> Claude'
- omarchy_logo='<img src="/assets/mockups/omarchy.png" alt="Omarchy" loading="lazy">' if (asset_root/'omarchy.png').is_file() else '<span class="omarchy-mark" aria-hidden="true">◈</span> Omarchy'
+ omarchy_logo='<img src="/assets/mockups/omarchy.svg" alt="Omarchy" loading="lazy">' if (asset_root/'omarchy.svg').is_file() else '<span class="omarchy-mark" aria-hidden="true">◈</span> Omarchy'
  tabs=''.join(f'<button class="tab" role="tab" id="tab-{i}" aria-controls="app-panel" aria-selected="{str(i==0).lower()}" tabindex="{0 if i==0 else -1}" data-index="{i}"><span class="mono">0{i+1}</span>{n}{'<sup aria-hidden="true">1</sup>' if i<2 else ''}</button>' for i,n in enumerate(t['appnames']))
  steps=''.join(f'<article class="step"><div class="step-num"><span class="mono">{n}</span><span class="arrow" aria-hidden="true">↗</span></div><h3>{h}</h3><strong>{tech}</strong><p>{p}</p></article>' for n,h,tech,p in t['steps'])
  term=''.join(f'<div class="terminal-line"><span aria-hidden="true">›</span>{s}</div>' for s in t['terminal'])
