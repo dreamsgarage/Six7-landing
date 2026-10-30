@@ -80,4 +80,13 @@ The source is `one-pagers/en.html` and `one-pagers/es.html`, adapted from the su
 
 ## App mockups
 
-The received `(2).zip` files are English/Spanish one-pager exports, identical in content to the earlier exports. They do not contain the four app mockups. App preview panels remain labelled forthcoming until the app assets are supplied.
+The four original application walkthroughs are supported directly from their supplied ZIP packages. Keep the complete source archives intact and add these exact paths to the repository:
+
+- `mockup-sources/crm-cp.zip` — ZIP containing `crm/screens/*.png` and `cp/screens/*.png`.
+- `mockup-sources/desk-kanban.zip` — ZIP containing `sd/screens/*.png` and `kb/screens/*.png`.
+- `mockup-sources/claude.svg` — original Claude ivory logo.
+- `mockup-sources/omarchy.png` — original Omarchy pixel-style wordmark.
+
+The dependency-free Netlify build extracts only the screenshot PNGs safely into `dist/assets/mockups/`, keeps originals unchanged, and enables a screen-selection gallery in each application tab. Until the bundles are present it shows a minimal fallback rather than broken links. The same build displays the original Claude and Omarchy logos in the Story section when present.
+
+The already-enabled Netlify alpha forms (`six7-alpha-en` and `six7-alpha-es`) remain unchanged. Netlify receives submissions through its Forms dashboard; notification routing remains configured in the Netlify UI.
