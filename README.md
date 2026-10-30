@@ -9,7 +9,7 @@ English and Spanish site for Six7. Prepared for Netlify continuous deployment fr
 - CRM, Kanban, Service Desk and C&P app sections with space for future mockups.
 - Bilingual footnotes: CRM and Kanban will be tested with personal Gmail accounts for solo businesses. Compatibility is not yet validated.
 - Separate English and Spanish A4 PDFs rendered from the supplied HTML, editable HTML packages and five original brand/story artworks.
-- Founder story without collaborator or build credits in the footer.
+- Founder story from Commodore 64 at age nine to building Six7 with Claude and Omarchy, with collaboration with Entangled Forge acknowledged in the Story section.
 
 ## Netlify deployment
 
