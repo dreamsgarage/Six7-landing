@@ -2,8 +2,10 @@
 import hashlib
 import shutil
 from scripts.carousel import install_carousel
+from scripts.import_alpha_screens import import_alpha_screens
 output=root/'dist'
 # Assemble the real app galleries before hashing CSS/JS or validating links.
+import_alpha_screens(root)
 install_carousel(root)
 static=output/'static'
 if static.exists():

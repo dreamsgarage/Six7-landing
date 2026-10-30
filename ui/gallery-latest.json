@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "release": "alpha-screens-2026-10-29",
+  "archive_sha256": "d01138f50bf1a59e4d6bcc67b207002188a2959b98b8ff52618747de46cf4892",
+  "source_note": "25 original PNG screenshots from the supplied Six7-alpha-screens.zip, preserved byte-for-byte. Replaces the previous 19-screen carousel set with the current Six7 app logos.",
+  "apps": [
+    {"key":"crm","name":{"en":"CRM","es":"CRM"},"expected_count":5,"screens":[
+      {"file":"01-my-day.png","source_blob":"8f796eeedd86080c63944b8331ee179f5e523043","label":{"en":"My day","es":"Mi día"},"caption":{"en":"Daily activities, overdue tasks and follow-ups in one view.","es":"Actividades del día, tareas vencidas y seguimientos en una misma vista."}},
+      {"file":"02-pipeline.png","source_blob":"a13175ec58cbd704880ce9c44d70f053dac847df","label":{"en":"Pipeline","es":"Pipeline"},"caption":{"en":"Opportunities by stage, with values, owners and expected close dates.","es":"Oportunidades por etapa, con importes, responsables y fechas de cierre previstas."}},
+      {"file":"03-deal.png","source_blob":"4cad135b6ed2776c38050076ff1b9c83eb2846b5","label":{"en":"Deal record","es":"Detalle de oportunidad"},"caption":{"en":"Deal details, next steps, activity and customer context.","es":"Datos de la oportunidad, próximos pasos, actividades y contexto del cliente."}},
+      {"file":"04-reports.png","source_blob":"a4b11914c0c4fd34f8690f27c405e642bd1d127f","label":{"en":"Reports","es":"Reportes"},"caption":{"en":"Pipeline by quarter, with filters and reporting options.","es":"Pipeline por trimestre, con filtros y opciones de reporte."}},
+      {"file":"05-new-contact.png","source_blob":"5d41b1963dc156f57b0c078acf26ac92283dbdb5","label":{"en":"New contact","es":"Nuevo contacto"},"caption":{"en":"A contact form with company details and duplicate-contact guidance.","es":"Un formulario de contacto con datos de la empresa y avisos sobre posibles duplicados."}}
+    ]},
+    {"key":"kb","name":{"en":"Kanban","es":"Kanban"},"expected_count":6,"screens":[
+      {"file":"01-boards.png","source_blob":"da4a4c0cf6cf931a96ec0994e1c53f925acf22eb","label":{"en":"Boards","es":"Tableros"},"caption":{"en":"Shared boards and their work summaries in one starting view.","es":"Tableros compartidos y resúmenes de trabajo en una misma vista inicial."}},
+      {"file":"02-board.png","source_blob":"329a227c9d845d7b14965d5cc6bad9c5cf76e6c3","label":{"en":"Board","es":"Tablero"},"caption":{"en":"Cards, assignees and due dates organised across workflow columns.","es":"Tarjetas, responsables y vencimientos organizados en columnas de trabajo."}},
+      {"file":"03-card.png","source_blob":"f02b74c3b1ee0ab870d138848bca5a3a9351224d","label":{"en":"Card detail","es":"Detalle de tarjeta"},"caption":{"en":"A card’s checklist and details alongside its board.","es":"La lista de tareas y los detalles de una tarjeta junto a su tablero."}},
+      {"file":"04-my-cards.png","source_blob":"a570ecb575319fdab5f87df9a27c70340c272b72","label":{"en":"My cards","es":"Mis tarjetas"},"caption":{"en":"Assigned cards grouped by due date.","es":"Tarjetas asignadas agrupadas por fecha de vencimiento."}},
+      {"file":"05-reports.png","source_blob":"dea7965cb7af8432db635b4dcd127278ca9c2eca","label":{"en":"Reports","es":"Reportes"},"caption":{"en":"Completed work by week, with board and member filters.","es":"Trabajo completado por semana, con filtros de tablero e integrante."}},
+      {"file":"06-calendar.png","source_blob":"30fa7dbf0526c57486c262daccba5761c67bca6c","label":{"en":"Calendar","es":"Calendario"},"caption":{"en":"A monthly view of cards and their due dates.","es":"Una vista mensual de las tarjetas y sus vencimientos."}}
+    ]},
+    {"key":"sd","name":{"en":"Service Desk","es":"Service Desk"},"expected_count":9,"screens":[
+      {"file":"01-my-queue.png","source_blob":"b2b3ad9af21cc46697af96490587c0542cc359d2","label":{"en":"My queue","es":"Mi cola"},"caption":{"en":"Queue priorities, response targets and tickets awaiting attention.","es":"Prioridades de la cola, objetivos de respuesta y tickets que requieren atención."}},
+      {"file":"02-ticket.png","source_blob":"60c7f3f06ff02c4e877ca534ef8c87e81d6fd218","label":{"en":"Ticket","es":"Ticket"},"caption":{"en":"The ticket conversation, ownership and service details together.","es":"La conversación del ticket, el responsable y los datos de atención en un solo lugar."}},
+      {"file":"03-new-request.png","source_blob":"75f1e2af562889a622715bbaf89c2c9853bbfced","label":{"en":"New request","es":"Nueva solicitud"},"caption":{"en":"Request details, category and supporting information in a dedicated form.","es":"Datos de la solicitud, categoría e información de apoyo en un formulario específico."}},
+      {"file":"04-my-requests.png","source_blob":"5ee6dfda57a51f25dd55f3546697d0ca09292659","label":{"en":"My requests","es":"Mis solicitudes"},"caption":{"en":"The requester’s tickets with their status and latest activity.","es":"Los tickets de quien solicita atención, con su estado y actividad reciente."}},
+      {"file":"05-reports.png","source_blob":"784b8de0c69db18935a0289efd32d9686ac851aa","label":{"en":"Reports","es":"Reportes"},"caption":{"en":"Ticket volume over time, with queue and priority filters.","es":"Volumen de tickets a lo largo del tiempo, con filtros de cola y prioridad."}},
+      {"file":"06-board.png","source_blob":"6c602f4a19306982c2d4e59ff923ecf2778a82d7","label":{"en":"Board","es":"Tablero"},"caption":{"en":"Tickets arranged by stage, with a selected ticket’s details alongside.","es":"Tickets organizados por etapa, con los detalles del ticket seleccionado al costado."}},
+      {"file":"07-resources.png","source_blob":"b4d019e3659a65dbfb877209caca9c17e3aa3a59","label":{"en":"Resources","es":"Recursos"},"caption":{"en":"Reusable support resources organised by queue.","es":"Recursos de atención reutilizables organizados por cola."}},
+      {"file":"08-tickets.png","source_blob":"11a1910eca74d77e59caafbe764ecb354ea6d712","label":{"en":"Tickets","es":"Tickets"},"caption":{"en":"A searchable ticket list with filters and status information.","es":"Una lista de tickets con búsqueda, filtros e información de estado."}},
+      {"file":"09-admin.png","source_blob":"de5d65820f94d20cf215a57e083a673f92c87c83","label":{"en":"Admin tools","es":"Administración"},"caption":{"en":"Intake controls, routing tests, form creation and data validation.","es":"Controles de recepción, pruebas de asignación, creación de formularios y validación de datos."}}
+    ]},
+    {"key":"cp","name":{"en":"Contracts & Providers","es":"Contratos y proveedores"},"expected_count":5,"screens":[
+      {"file":"01-home.png","source_blob":"d75e462d933700e86e639e84303b7071ce165b94","label":{"en":"Needs attention","es":"Necesita atención"},"caption":{"en":"Approvals, renewals, notice deadlines and obligations that need attention.","es":"Aprobaciones, renovaciones, preavisos y obligaciones que requieren atención."}},
+      {"file":"02-approvals.png","source_blob":"75b9bc34aead8742465eba6c5cf6c7df84e8828d","label":{"en":"Approvals","es":"Aprobaciones"},"caption":{"en":"Purchase and renewal decisions with costs and approval context.","es":"Decisiones sobre compras y renovaciones, con costos y contexto de aprobación."}},
+      {"file":"03-new-request.png","source_blob":"b754557011530b1de257d40bc9813e7b56064743","label":{"en":"Purchase request","es":"Solicitud de compra"},"caption":{"en":"A new purchase request alongside its total value and approval route.","es":"Una nueva solicitud de compra junto a su valor total y circuito de aprobación."}},
+      {"file":"04-contract.png","source_blob":"456db83db275a09a7cdbbc9afd3bc5ca49eb5ee3","label":{"en":"Contract record","es":"Registro de contrato"},"caption":{"en":"Contract terms, notice dates and renewal decisions alongside the register.","es":"Condiciones, preavisos y decisiones de renovación junto al registro de contratos."}},
+      {"file":"05-reports.png","source_blob":"ce1c94a1355b9c93eefcbe71dd888cb7484d936b","label":{"en":"Reports","es":"Reportes"},"caption":{"en":"Contracts due for renewal and renewal decisions by quarter.","es":"Contratos a renovar y decisiones de renovación por trimestre."}}
+    ]}
+  ]
+}

@@ -1,0 +1,25 @@
+name: Check published screenshot release
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'Six7-alpha-screens.zip'
+      - 'mockup-sources/**'
+      - 'ui/gallery*.json'
+      - 'scripts/import_alpha_screens.py'
+      - 'scripts/check_public_screens.py'
+      - '.github/workflows/screenshots-public-check.yml'
+permissions:
+  contents: read
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Read published pages and compare screenshot bytes
+        run: python3 scripts/check_public_screens.py
