@@ -1,7 +1,10 @@
 # Executed by build.py with root, site_url and preview in scope.
 import hashlib
 import shutil
+from scripts.carousel import install_carousel
 output=root/'dist'
+# Assemble the real app galleries before hashing CSS/JS or validating links.
+install_carousel(root)
 static=output/'static'
 if static.exists():
  shutil.rmtree(static)

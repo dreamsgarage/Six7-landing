@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "source_note": "Nineteen distinct PNGs in the user GitHub upload. Three duplicate-name files from the original ZIPs were not present in that flat upload; none are replaced with another app's screenshot.",
+  "apps": [
+    {"key":"crm","name":{"en":"CRM","es":"CRM"},"expected_count":5,"screens":[
+      {"file":"01-my-day.png","source_blob":"8adf0b518bd15698119d7b2394ad18a6a65c71f1","label":{"en":"My day","es":"Mi día"},"caption":{"en":"Overdue tasks, today’s activities, follow-ups and stale deals.","es":"Tareas vencidas, actividades del día, seguimientos y oportunidades sin movimiento."}},
+      {"file":"02-pipeline.png","source_blob":"fdebbaf8d63417f982f046fe09a513cbbd1580ab","label":{"en":"Pipeline","es":"Pipeline"},"caption":{"en":"Deals organised by stage, with values, owners and expected close dates.","es":"Oportunidades por etapa, con importes, responsables y fechas de cierre previstas."}},
+      {"file":"03-deal.png","source_blob":"a7d6938eab593a459390d2b0a1a4b52eae2a129a","label":{"en":"Deal record","es":"Detalle de oportunidad"},"caption":{"en":"The next step, activity timeline, contact and company in one record.","es":"El próximo paso, las actividades, el contacto y la empresa en un mismo registro."}},
+      {"file":"04-reports.png","source_blob":"eb693de79ea7d479f1f8978c11f7129956bbc426","label":{"en":"Reports","es":"Reportes"},"caption":{"en":"Pipeline by quarter, including weighted value and overdue close dates.","es":"Pipeline por trimestre, con valor ponderado y cierres pendientes."}},
+      {"file":"05-new-contact.png","source_blob":"70ade47a00b4a921831c85db0b332e49205fab86","label":{"en":"New contact","es":"Nuevo contacto"},"caption":{"en":"A dedicated form for adding a contact to the CRM.","es":"Un formulario específico para sumar un contacto al CRM."}}
+    ]},
+    {"key":"kb","name":{"en":"Kanban","es":"Kanban"},"expected_count":4,"screens":[
+      {"file":"01-boards.png","source_blob":"371d6dce3af36924faee857e6ebaf17fec7c37be","label":{"en":"Boards","es":"Tableros"},"caption":{"en":"A starting point for the team’s boards and shared work.","es":"Un punto de partida para los tableros y el trabajo compartido del equipo."}},
+      {"file":"02-board.png","source_blob":"24d56607bd1db1363dc17006e7d7b5f59dacc99d","label":{"en":"Board","es":"Tablero"},"caption":{"en":"Cards, assignees, due dates and checklists across the workflow.","es":"Tarjetas, responsables, vencimientos y listas de tareas a lo largo del flujo de trabajo."}},
+      {"file":"03-card.png","source_blob":"5534829b547fbc6042db3d4242c0b670325400f0","label":{"en":"Card detail","es":"Detalle de tarjeta"},"caption":{"en":"Description, checklist, comments and history together.","es":"Descripción, lista de tareas, comentarios e historial en un solo lugar."}},
+      {"file":"04-my-cards.png","source_blob":"72af400e58329d9098e01ed5d0585f6743e53541","label":{"en":"My cards","es":"Mis tarjetas"},"caption":{"en":"Assigned work grouped by overdue, today, this week and later.","es":"Trabajo asignado agrupado por vencido, hoy, esta semana y más adelante."}}
+    ]},
+    {"key":"sd","name":{"en":"Service Desk","es":"Service Desk"},"expected_count":5,"screens":[
+      {"file":"01-my-queue.png","source_blob":"e8924f9c073a8a312dc6477f951358b61c82fe9c","label":{"en":"My queue","es":"Mi cola"},"caption":{"en":"Response targets, waiting replies and tickets ready to assign.","es":"Objetivos de respuesta, contestaciones pendientes y tickets listos para asignar."}},
+      {"file":"02-ticket.png","source_blob":"6e2b6448aa8fbde77355052e2c48dfe314e35fb0","label":{"en":"Ticket","es":"Ticket"},"caption":{"en":"A ticket record with its conversation, ownership and service context.","es":"El registro de un ticket con su conversación, responsable y contexto de atención."}},
+      {"file":"04-my-requests.png","source_blob":"ffca03a14e76f6175062213e993a405caacc0d9c","label":{"en":"My requests","es":"Mis solicitudes"},"caption":{"en":"The requester’s view of their service requests.","es":"La vista de las solicitudes de quien necesita atención."}},
+      {"file":"06-board.png","source_blob":"335b6ce598dd03c45d90546b0484186e04ab5e9f","label":{"en":"Board","es":"Tablero"},"caption":{"en":"An operational board for reviewing tickets by workflow stage.","es":"Un tablero operativo para revisar los tickets por etapa de trabajo."}},
+      {"file":"07-resources.png","source_blob":"1b86dad8a9481a23d776a01f5aba807c558ca338","label":{"en":"Resources","es":"Recursos"},"caption":{"en":"Reusable replies, links and snippets organised by queue.","es":"Respuestas reutilizables, enlaces y fragmentos organizados por cola."}}
+    ]},
+    {"key":"cp","name":{"en":"Contracts & Providers","es":"Contratos y proveedores"},"expected_count":5,"screens":[
+      {"file":"01-home.png","source_blob":"d8f1b0c8798219bd4c6fa4ac0de1d7ea14eff04f","label":{"en":"Needs attention","es":"Necesita atención"},"caption":{"en":"Approvals, renewals, notice deadlines, provider documents and obligations.","es":"Aprobaciones, renovaciones, preavisos, documentos de proveedores y obligaciones."}},
+      {"file":"02-approvals.png","source_blob":"8d3fe86e604cc394939b66a488bd3c4f15a8de67","label":{"en":"Approvals","es":"Aprobaciones"},"caption":{"en":"Purchase and renewal decisions with value, routing and justification.","es":"Decisiones sobre compras y renovaciones con importe, circuito y justificación."}},
+      {"file":"03-new-request.png","source_blob":"a659fdc8e52746db9b05f68c054f945354791208","label":{"en":"Purchase request","es":"Solicitud de compra"},"caption":{"en":"Total contract value and approval routing alongside a new request.","es":"Valor total del contrato y circuito de aprobación junto a una nueva solicitud."}},
+      {"file":"04-contract.png","source_blob":"b7db1d17650162eb9e6696a48bb1fc9c3b7837bd","label":{"en":"Contract record","es":"Registro de contrato"},"caption":{"en":"Terms, notice dates and renewal review beside the contract register.","es":"Condiciones, fechas de preaviso y revisión de renovación junto al registro."}},
+      {"file":"05-reports.png","source_blob":"ab4cecacd9b9a57c3f6d8c7a450f6ba9f01e24e9","label":{"en":"Reports","es":"Reportes"},"caption":{"en":"Contracts due for renewal, decisions and renewal values by quarter.","es":"Contratos a renovar, decisiones e importes de renovación por trimestre."}}
+    ]}
+  ]
+}
