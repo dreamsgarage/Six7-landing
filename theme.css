@@ -27,3 +27,28 @@ html[data-theme=light] .collab-marks img[src$="claude.svg"]{background:#272525;p
 @media(max-width:760px){.preview-area.has-shots{min-height:0}.mockup-navigation{gap:6px}.mockup-navigation button{font-size:10px}.collab-marks img{max-width:140px;max-height:34px}}
 
 .sample-screen{width:100%;background:#f6f5fb;color:#1b1d32;border:1px solid #dddfee;text-align:left;border-radius:10px;overflow:hidden;padding:22px;box-shadow:0 15px 30px #13122b12}.sample-screen h4{background:#171928;color:#fff;margin:-22px -22px 22px;padding:15px 22px;font-size:14px;font-weight:600}.sample-screen>strong{font-size:25px;display:block;margin-bottom:18px}.sample-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.sample-tiles>div{border:1px solid #dfe1ec;border-radius:8px;background:#fff;padding:14px;min-height:85px;display:flex;flex-direction:column;gap:6px}.sample-tiles b{font-size:23px;color:#7942ce}.sample-tiles span{font-size:12px;color:#494c68}@media(max-width:760px){.sample-screen{padding:16px}.sample-screen h4{margin:-16px -16px 18px;padding:13px 16px}.sample-tiles{gap:8px}.sample-tiles>div{padding:10px}}
+
+/* Six7 final responsive editorial and product review */
+.story-chapters{grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(18px,2.7vw,42px);margin-top:clamp(42px,6vw,75px)}
+.story-chapter{min-width:0}.story-chapter h3{font-size:clamp(20px,2.15vw,27px);line-height:1.2;overflow-wrap:break-word}
+.story-chapter p{font-size:clamp(12px,1.05vw,14px);line-height:1.75}
+.story-lead{gap:clamp(28px,5vw,90px)}
+.story-signature{min-width:0}
+.story-numerals{font-size:clamp(85px,11vw,180px)}
+.collab-marks{display:flex;align-items:center;flex-wrap:wrap;gap:clamp(6px,.75vw,12px);margin-top:24px}
+.collab-marks a{padding:0;border:0;min-width:0}
+.collab-marks img{width:auto;max-width:95px;max-height:30px;object-fit:contain}
+.collab-heart{color:#d92926;font-size:18px;flex:none}
+.ef-brand{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.12em;line-height:1.35;color:var(--ink);text-align:center}
+html[data-theme=dark] .ef-brand{color:var(--paper)}
+.app-panel{grid-template-columns:minmax(0,.75fr) minmax(0,1.35fr);gap:clamp(22px,5vw,66px);align-items:start}
+.app-copy{min-width:0;padding-top:clamp(8px,4vw,40px)}
+.preview-area{min-width:0;overflow:hidden;border-style:solid;padding:clamp(14px,2vw,28px)}
+.preview-area.has-shots{padding:0}
+.mockup-figure img{aspect-ratio:1.44;width:100%;height:auto;object-fit:contain}
+.mockup-navigation{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:thin}
+.mockup-navigation button{flex:none;white-space:nowrap}
+.sample-screen{min-height:290px}
+@media(max-width:1100px){.story-chapters{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:34px}.collab-marks img{max-width:130px}.app-panel{gap:26px}}
+@media(max-width:760px){.story-chapters{grid-template-columns:1fr;gap:25px;margin-top:34px}.story-chapter{padding-top:19px}.story-chapter p{font-size:14px}.story-lead{grid-template-columns:1fr;gap:24px}.story-numerals{font-size:clamp(92px,20vw,145px)}.app-panel{grid-template-columns:1fr;gap:24px;padding-top:25px}.app-copy{padding-top:0}.app-copy h3{font-size:30px}.preview-area{min-height:0}.wrap{width:min(100% - 36px,1240px)}section.section{padding:66px 0}.section-head{gap:22px}.tabs{grid-template-columns:repeat(4,minmax(0,1fr))}.tab{font-size:clamp(12px,3.2vw,16px);padding:13px 4px 13px 0}.tab .mono{font-size:9px}.collab-marks img{max-width:100px}}
+@media(max-width:390px){.collab-marks img{max-width:78px}.collab-heart{font-size:13px}.ef-brand{font-size:8px}.story-numerals{font-size:90px}.tabs{gap:4px}}
