@@ -9,7 +9,7 @@ English and Spanish site for Six7. Prepared for Netlify continuous deployment fr
 - CRM, Kanban, Service Desk and C&P app sections with space for future mockups.
 - Bilingual footnotes: CRM and Kanban will be tested with personal Gmail accounts for solo businesses. Compatibility is not yet validated.
 - Separate English and Spanish A4 PDFs rendered from the supplied HTML, editable HTML packages and five original brand/story artworks.
-- Founder story and a single collaborator/build credit in the footer.
+- Founder story without collaborator or build credits in the footer.
 
 ## Netlify deployment
 
@@ -77,9 +77,6 @@ python3 scripts/render_one_pagers.py
 
 The source is `one-pagers/en.html` and `one-pagers/es.html`, adapted from the supplied HTML exports. `one-pagers/print.css` makes the exports fit one A4 page in each language. Review the rendered PDFs after edits.
 
-## Build credit
-
-Built in collaboration with Entangled Forge using Anthropic Claude and Omarchy on a repurposed seven-year-old notebook.
 
 ## App mockups
 
