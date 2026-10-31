@@ -1,6 +1,6 @@
-/* Readability adjustment: font-size only.
-   Keep the existing page structure, fonts, weights, colours, spacing, tab
-   presentation, logos, screenshots and 520px carousel width unchanged. */
+/* Readability adjustments, plus compact footer notes.
+   Keep the existing fonts, colours, tabs, logos, screenshots and 520px
+   carousel width. Footer-only flow and spacing overrides are at the end. */
 
 /* Section signposts and main reading text. Large headlines are unchanged. */
 section.section .eyebrow { font-size: 15px; }
@@ -55,3 +55,20 @@ section.section .eyebrow { font-size: 15px; }
 @media (max-width: 600px) {
   #apps .product-expand { font-size: 13px; }
 }
+
+/* Quiet footer notes: one continuous text flow, with natural wrapping.
+   Scoped to the footer; the app-section compatibility note stays unchanged. */
+.footer > .wrap { font-size: 11px; line-height: 1.6; text-wrap: pretty; }
+.footer .footer-top { padding-bottom: 16px; margin-bottom: 12px; }
+.footer .footer-solo,
+.footer .footer-bottom,
+.footer .footer-bottom p {
+  display: inline;
+  font-size: 11px;
+  line-height: 1.6;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.footer .footer-bottom::before { content: " "; }
+.footer .footer-solo sup { font-size: 9px; }
