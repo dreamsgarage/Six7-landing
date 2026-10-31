@@ -1,0 +1,57 @@
+/* Readability adjustment: font-size only.
+   Keep the existing page structure, fonts, weights, colours, spacing, tab
+   presentation, logos, screenshots and 520px carousel width unchanged. */
+
+/* Section signposts and main reading text. Large headlines are unchanged. */
+section.section .eyebrow { font-size: 15px; }
+.hero .eyebrow { font-size: 13px; }
+.intro, .section-head > p, .why-copy > p, .contact-invite { font-size: 18px; }
+.benefit p, #apps .product-copy > p { font-size: 17px; }
+.story .story-chapter p, .step strong, .step p { font-size: 16px; }
+.story .story-intro { font-size: 18px !important; }
+
+/* Existing app tabs and gallery. No new tab styles or interactions. */
+#apps .product-tab { font-size: 20px; }
+#apps .product-tab .mono { font-size: 12px; }
+#apps .product-copy .eyebrow { font-size: 13px; }
+#apps .product-replaces { font-size: 16px; }
+#apps .product-replaces .mono { font-size: 12px; }
+#apps .product-copy .product-screens-note { font-size: 13px; }
+#apps .product-window-bar { font-size: 12px; }
+#apps .product-window-bar strong { font-size: 13px; }
+#apps .product-counter { font-size: 13px; }
+#apps .product-expand { font-size: 14px; }
+#apps .product-caption h4 { font-size: 16px; }
+#apps .product-caption p { font-size: 14px; }
+#apps .product-thumb span { font-size: 12px; }
+#apps .solo-footnote { font-size: 13px; }
+.product-dialog-foot [data-zoom], .product-dialog-foot .product-counter { font-size: 13px; }
+
+/* Existing actions, downloads and form fields. */
+.btn, .textlink { font-size: 16px; }
+.header nav, .header-cta { font-size: 14px; }
+.header .lang, .header .theme-picker { font-size: 12px; }
+.resource p { font-size: 14px; }
+.resource-actions { font-size: 15px; }
+.filetype { font-size: 13px; }
+.alpha-form label { font-size: 14px; }
+.alpha-form input, .alpha-form textarea, .alpha-form select { font-size: 16px; }
+.alpha-form small, .build-credit { font-size: 13px; }
+.footer-top { font-size: 13px; }
+.footer-bottom, .footer-solo { font-size: 12px; }
+
+@media (max-width: 760px) {
+  section.section .eyebrow { font-size: 14px; }
+  .intro, .section-head > p, .why-copy > p, .contact-invite,
+  .benefit p, #apps .product-copy > p { font-size: 16px; }
+  .story .story-intro { font-size: 16px !important; }
+  #apps .product-tab { font-size: 18px; }
+  #apps .product-copy .eyebrow { font-size: 12px; }
+  #apps .product-copy .product-screens-note { font-size: 13px; }
+  .resource-actions { font-size: 14px; }
+  .header-cta { font-size: 13px; }
+}
+
+@media (max-width: 600px) {
+  #apps .product-expand { font-size: 13px; }
+}

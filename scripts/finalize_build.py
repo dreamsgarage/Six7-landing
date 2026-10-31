@@ -7,6 +7,9 @@ output=root/'dist'
 # Assemble the real app galleries before hashing CSS/JS or validating links.
 import_alpha_screens(root)
 install_carousel(root)
+# Apply only the requested text-size changes after the existing styles.
+with (output/'style.css').open('a',encoding='utf-8') as stylesheet:
+ stylesheet.write('\n'+(root/'ui/font-sizes.css').read_text(encoding='utf-8'))
 static=output/'static'
 if static.exists():
  shutil.rmtree(static)
