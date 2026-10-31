@@ -1,4 +1,4 @@
-name: Verify published font-size-only release
+name: Verify published compact footer
 on:
   push:
     branches: [review/font-sizes-20261031]
@@ -18,7 +18,7 @@ jobs:
           from pathlib import Path
           from urllib.request import Request, urlopen
           from urllib.parse import urljoin
-          expected = 'e1e0af2e14cf376ad690872cbf378bd5d6282c92b9bed52ba36c11836ae4ced9'
+          expected = 'a8e97699fb8ebc79c9a261d178b0a348c5f3728273dbbc9d061d752e51af5347'
           sites = ['https://six7.work/', 'https://six7.work/es/', 'https://six7-landing.netlify.app/es/']
           def fetch(url):
               request = Request(url, headers={'User-Agent':'Six7-release-verification', 'Cache-Control':'no-cache'})
@@ -29,28 +29,28 @@ jobs:
               results = []
               for site in sites:
                   try:
-                      html = fetch(site+'?typography-check='+str(int(time.time()))).decode('utf-8')
+                      html = fetch(site+'?footer-check='+str(int(time.time()))).decode('utf-8')
                       css_url = urljoin(site, re.search(r'href="([^"]+\.css)"', html).group(1))
                       css_hash = hashlib.sha256(fetch(css_url)).hexdigest()
                       data = json.loads(re.search(r'<script id="app-data" type="application/json">(.*?)</script>',html,re.S).group(1))
                       counts = dict(zip(data['keys'],map(len,data['screens'])))
                       home = fetch(urljoin(site,data['screens'][data['keys'].index('cp')][0]['src']))
                       home_blob = hashlib.sha1(f'blob {len(home)}\0'.encode()+home).hexdigest()
-                      results.append({'site':site,'css_url':css_url,'stylesheet_sha256':css_hash,'font_size_release_matches':css_hash==expected,'screens':counts,'screenshot_release_preserved':counts=={'crm':5,'kb':6,'sd':9,'cp':5} and home_blob=='d75e462d933700e86e639e84303b7071ce165b94'})
+                      results.append({'site':site,'css_url':css_url,'stylesheet_sha256':css_hash,'compact_footer_matches':css_hash==expected,'screens':counts,'screenshot_release_preserved':counts=={'crm':5,'kb':6,'sd':9,'cp':5} and home_blob=='d75e462d933700e86e639e84303b7071ce165b94'})
                   except Exception as error:
                       results.append({'site':site,'error':str(error)})
-              if all(r.get('font_size_release_matches') and r.get('screenshot_release_preserved') for r in results):
+              if all(r.get('compact_footer_matches') and r.get('screenshot_release_preserved') for r in results):
                   break
               if attempt < 3:
                   time.sleep(10)
-          report = {'verified_at_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'main_commit':'c9ed6d222259ae97841e69ba4d51fa5c6c7a733c','results':results}
-          Path('font-size-production-verification.json').write_text(json.dumps(report,indent=2))
+          report = {'verified_at_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'main_commit':'09c3e6f29b8ae2c1db7fd611523687089c53834f','results':results}
+          Path('compact-footer-production-verification.json').write_text(json.dumps(report,indent=2))
           print(json.dumps(report,indent=2))
-          assert all(r.get('font_size_release_matches') and r.get('screenshot_release_preserved') for r in results), 'Production does not yet match the verified font-size-only build'
+          assert all(r.get('compact_footer_matches') and r.get('screenshot_release_preserved') for r in results), 'Production does not yet match the verified compact footer build'
           PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: font-size-production-verification
-          path: font-size-production-verification.json
+          name: compact-footer-production-verification
+          path: compact-footer-production-verification.json
           retention-days: 3
