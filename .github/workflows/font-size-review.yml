@@ -1,0 +1,35 @@
+name: Build real pages for font-size review
+on:
+  push:
+    branches: [review/font-sizes-20261031]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: npm ci --ignore-scripts
+      - name: Build candidate and baseline from the same source
+        env:
+          SITE_URL: https://six7.work
+        run: |
+          npm run build
+          mkdir -p typography-audit
+          cp -a dist typography-audit/after
+          git show 880f41dad5ef87672543f2ddb9146391bbd0f3c8:scripts/finalize_build.py > scripts/finalize_build.py
+          npm run build
+          cp -a dist typography-audit/before
+      - uses: actions/upload-artifact@v4
+        with:
+          name: six7-font-size-review
+          path: typography-audit/
+          retention-days: 3
