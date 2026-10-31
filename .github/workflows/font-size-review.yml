@@ -1,35 +1,56 @@
-name: Build real pages for font-size review
+name: Verify published font-size-only release
 on:
   push:
     branches: [review/font-sizes-20261031]
 permissions:
   contents: read
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 2
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - run: npm ci --ignore-scripts
-      - name: Build candidate and baseline from the same source
-        env:
-          SITE_URL: https://six7.work
+      - name: Verify exact production stylesheet and unchanged screenshot release
         run: |
-          npm run build
-          mkdir -p typography-audit
-          cp -a dist typography-audit/after
-          git show 880f41dad5ef87672543f2ddb9146391bbd0f3c8:scripts/finalize_build.py > scripts/finalize_build.py
-          npm run build
-          cp -a dist typography-audit/before
+          python3 - <<'PY'
+          import hashlib, json, re, time
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from urllib.parse import urljoin
+          expected = 'e1e0af2e14cf376ad690872cbf378bd5d6282c92b9bed52ba36c11836ae4ced9'
+          sites = ['https://six7.work/', 'https://six7.work/es/', 'https://six7-landing.netlify.app/es/']
+          def fetch(url):
+              request = Request(url, headers={'User-Agent':'Six7-release-verification', 'Cache-Control':'no-cache'})
+              with urlopen(request, timeout=12) as response:
+                  return response.read()
+          results = []
+          for attempt in range(4):
+              results = []
+              for site in sites:
+                  try:
+                      html = fetch(site+'?typography-check='+str(int(time.time()))).decode('utf-8')
+                      css_url = urljoin(site, re.search(r'href="([^"]+\.css)"', html).group(1))
+                      css_hash = hashlib.sha256(fetch(css_url)).hexdigest()
+                      data = json.loads(re.search(r'<script id="app-data" type="application/json">(.*?)</script>',html,re.S).group(1))
+                      counts = dict(zip(data['keys'],map(len,data['screens'])))
+                      home = fetch(urljoin(site,data['screens'][data['keys'].index('cp')][0]['src']))
+                      home_blob = hashlib.sha1(f'blob {len(home)}\0'.encode()+home).hexdigest()
+                      results.append({'site':site,'css_url':css_url,'stylesheet_sha256':css_hash,'font_size_release_matches':css_hash==expected,'screens':counts,'screenshot_release_preserved':counts=={'crm':5,'kb':6,'sd':9,'cp':5} and home_blob=='d75e462d933700e86e639e84303b7071ce165b94'})
+                  except Exception as error:
+                      results.append({'site':site,'error':str(error)})
+              if all(r.get('font_size_release_matches') and r.get('screenshot_release_preserved') for r in results):
+                  break
+              if attempt < 3:
+                  time.sleep(10)
+          report = {'verified_at_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'main_commit':'c9ed6d222259ae97841e69ba4d51fa5c6c7a733c','results':results}
+          Path('font-size-production-verification.json').write_text(json.dumps(report,indent=2))
+          print(json.dumps(report,indent=2))
+          assert all(r.get('font_size_release_matches') and r.get('screenshot_release_preserved') for r in results), 'Production does not yet match the verified font-size-only build'
+          PY
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: six7-font-size-review
-          path: typography-audit/
+          name: font-size-production-verification
+          path: font-size-production-verification.json
           retention-days: 3
