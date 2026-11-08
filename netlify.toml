@@ -6,6 +6,10 @@
   NODE_VERSION = "24"
   PYTHON_VERSION = "3.12"
 
+# Metadata only: domain assignment, TLS and DNS remain account-level settings.
+[context.production.environment]
+  SITE_URL = "https://six7.work"
+
 [build.processing.html]
   pretty_urls = true
 

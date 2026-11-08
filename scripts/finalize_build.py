@@ -53,3 +53,6 @@ headers+='''
 '''
 (output/'_headers').write_text(headers)
 (output/'_redirects').write_text('/en / 301\n/en/* /:splat 301\n')
+# Discovery metadata and visible positioning share one validated source.
+from scripts.discovery import finalize_discovery
+finalize_discovery(root, site_url, preview, T)
