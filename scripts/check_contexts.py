@@ -13,7 +13,7 @@ with tempfile.TemporaryDirectory() as temp:
   subprocess.run(['python3','build.py'],cwd=work,env=env,check=True,stdout=subprocess.DEVNULL)
   subprocess.run(['python3','scripts/check_site.py'],cwd=work,env=env,check=True,stdout=subprocess.DEVNULL)
   html=(work/'dist/index.html').read_text()
-  assert f'<link rel="canonical" href="{origin}/">' in html,context
+  assert f'<link rel="canonical" href="{origin if noindex else "https://six7.work"}/">' in html,context
   assert ('<meta name="robots" content="noindex, nofollow">' in html)==noindex,context
   assert ('X-Robots-Tag: noindex, nofollow' in (work/'dist/_headers').read_text())==noindex,context
   assert ('Disallow: /' in (work/'dist/robots.txt').read_text())==noindex,context
