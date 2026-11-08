@@ -52,7 +52,13 @@ headers+='''
   Cache-Control: public, max-age=3600, must-revalidate
 '''
 (output/'_headers').write_text(headers)
-(output/'_redirects').write_text('/en / 301\n/en/* /:splat 301\n')
+redirects='/en / 301\n/en/* /:splat 301\n'
+# Only the exact production alias is redirected. Deploy Previews stay usable.
+# Public audit confirmed six7.work is reachable and www already redirects to it.
+if not preview:
+ redirects=('https://six7-landing.netlify.app/* https://six7.work/:splat 301!\n'
+            'http://six7-landing.netlify.app/* https://six7.work/:splat 301!\n'+redirects)
+(output/'_redirects').write_text(redirects)
 # Discovery metadata and visible positioning share one validated source.
 from scripts.discovery import finalize_discovery
 finalize_discovery(root, site_url, preview, T)

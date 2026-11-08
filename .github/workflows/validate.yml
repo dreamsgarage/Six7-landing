@@ -22,9 +22,12 @@ jobs:
       - run: npm run build
       - name: Check deployment contexts
         run: python3 scripts/check_contexts.py
-      - name: Read-only public DNS and discovery diagnostics
+      - name: Read-only public DNS and deployment verification
         run: python3 scripts/audit_live_discovery.py
+        env:
+          SIX7_EXPECTED_RELEASE: ${{ github.event_name == 'push' && github.sha || '' }}
       - name: Preserve diagnostic report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: six7-discovery-audit

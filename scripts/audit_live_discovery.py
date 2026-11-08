@@ -13,6 +13,8 @@ from urllib.parse import urlencode
 from urllib.request import Request, build_opener, HTTPRedirectHandler
 import json
 import socket
+import os
+import time
 import xml.etree.ElementTree as ET
 from discovery import Metadata, BOTS
 
@@ -71,6 +73,14 @@ def socket_record(host):
 
 
 def main():
+    expected = os.environ.get('SIX7_EXPECTED_RELEASE', '')
+    # Netlify deploys independently of GitHub's build job. Bound the readiness wait.
+    if expected:
+        for attempt in range(31):
+            if fetch('https://six7.work/').get('release') == expected:
+                break
+            if attempt < 30:
+                time.sleep(3)
     hosts = ('six7.work', 'www.six7.work', 'six7-landing.netlify.app', 'example.com')
     urls = (
         'https://six7.work/', 'https://six7.work/es/', 'https://six7.work/robots.txt',
@@ -87,7 +97,28 @@ def main():
     with ThreadPoolExecutor(max_workers=8) as pool:
         dns = list(pool.map(socket_record, hosts))
         checks = list(pool.map(lambda args: fetch(*args), tasks))
-    report = {'checked_at': datetime.now(timezone.utc).isoformat(), 'socket_dns': dns, 'checks': checks,
+    failures = []
+    if expected:
+        by_url = {r['url']: r for r in checks if r['user_agent'] == 'Six7-Discovery-Audit/1.0'}
+        for prefix in ('/', '/es/'):
+            url = 'https://six7.work' + prefix
+            row = by_url[url]
+            if row.get('status') != 200 or row.get('release') != expected or row.get('canonical') != [url]:
+                failures.append(url + ': HTTP, release or canonical mismatch')
+            if 'noindex' in (row.get('robots_meta') or '') or 'noindex' in row.get('headers', {}).get('x-robots-tag', ''):
+                failures.append(url + ': noindex present')
+        for url in ('https://www.six7.work/', 'http://six7.work/', 'https://six7-landing.netlify.app/'):
+            row = by_url[url]
+            if row.get('status') != 200 or row.get('final_url') != 'https://six7.work/' or not row.get('redirects'):
+                failures.append(url + ': canonical redirect missing or failed')
+        for name in ('robots.txt', 'sitemap.xml', 'llms.txt'):
+            row = by_url['https://six7.work/' + name]
+            if row.get('status') != 200 or 'text/html' in row.get('headers', {}).get('content-type', ''):
+                failures.append(name + ': unavailable or returned HTML')
+        if by_url['https://six7.work/__six7_discovery_missing_page__'].get('status') != 404:
+            failures.append('Missing page must return 404')
+    report = {'expected_release': expected or None, 'release_acceptance_failures': failures,
+              'checked_at': datetime.now(timezone.utc).isoformat(), 'socket_dns': dns, 'checks': checks,
               'limitations': ['Read-only observations from this runner, not global availability.',
                              'User-agent probes do not verify requests from actual search-provider IPs.',
                              'A 200 response does not prove Google or Bing has indexed the site.']}
@@ -96,7 +127,10 @@ def main():
         print('DNS ' + json.dumps(row, ensure_ascii=False))
     for row in checks:
         print('CHECK ' + json.dumps(row, ensure_ascii=False))
-    print('Saved discovery-audit.json. Diagnostic only: inspect results; workflow success does not certify the live deployment.')
+    print('RELEASE ' + json.dumps({'expected': expected or None, 'failures': failures}))
+    print('Saved discovery-audit.json. Baseline runs without an expected release are diagnostic only.')
+    if failures:
+        raise SystemExit('Production release verification failed; inspect discovery-audit.json.')
 
 if __name__ == '__main__':
     main()
