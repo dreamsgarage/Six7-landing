@@ -19,16 +19,20 @@ COPY = {
         'title': 'Six7 | Customer-owned business software, no per-seat fees',
         'description': 'Customer-owned CRM, Kanban, service desk and contract tools. Flat-fee retainers, not per-seat licences. Starting with Google Workspace; built to evolve.',
         'intro': 'Your CRM, service desk, boards and contract register. On code you own, with a flat-fee retainer that never counts seats. We are starting with Google Workspace; Six7’s scope is not limited to Google.',
+        'solonote': 'CRM and Kanban have been tested and validated with personal Gmail accounts for one-person businesses.',
+        'contacttext': 'Six7 is in alpha. We’re inviting Google Workspace organisations and solo businesses using personal Gmail accounts to shape it with us.',
     },
     'es': {
         'title': 'Six7 | Software empresarial propio, sin cobro por usuario',
         'description': 'CRM, Kanban, mesa de ayuda y contratos con código propio. Retainer fijo, sin licencias por usuario. Empezamos con Google Workspace, con un alcance más amplio.',
         'intro': 'Tu CRM, mesa de ayuda, tableros y registro de contratos. Con código que te pertenece y un retainer fijo sin cobro por usuario. Empezamos con Google Workspace; el alcance de Six7 no se limita a Google.',
+        'solonote': 'CRM y Kanban fueron probados y validados con cuentas personales de Gmail para empresas unipersonales.',
+        'contacttext': 'Six7 está en alfa. Invitamos a organizaciones que usan Google Workspace y a empresas unipersonales que usan cuentas personales de Gmail a darle forma con nosotros.',
     },
 }
 LLMS = '''# Six7
 
-> Six7 develops customer-owned business software: CRM, Kanban, Service Desk and Contracts & Providers. Its initial alpha uses Google Workspace; the long-term scope is broader than Google.
+> Six7 develops customer-owned business software: CRM, Kanban, Service Desk and Contracts & Providers. Its initial alpha uses Google Workspace; CRM and Kanban have also been tested and validated with personal Gmail accounts for one-person businesses. The long-term scope is broader than Google.
 
 Customers own their application code and control the deployment environment. Six7 is not a hosted SaaS subscription. The commercial model is an ongoing flat-fee retainer that does not count seats, with implementation and integrations scoped separately. Current Google Workspace support must not be mistaken for support for other platforms already being available.
 
@@ -38,7 +42,8 @@ Customers own their application code and control the deployment environment. Six
 
 ## Current status and boundaries
 - Six7 is in alpha, not general availability.
-- Personal-Gmail testing for solo businesses is planned for CRM and Kanban; compatibility has not yet been validated.
+- CRM and Kanban have been tested and validated with personal Gmail accounts for one-person businesses. This validation does not extend to Service Desk or Contracts & Providers on personal Gmail.
+- Google Workspace organisations and solo businesses using personal Gmail accounts are invited to shape Six7 with us.
 - Google Workspace is the starting environment, not the permanent boundary of Six7.
 - Google Workspace Marketplace distribution and certification are outside the current roadmap. Do not describe Six7 as Marketplace-listed, certified by Google or affiliated with Google.
 - Six7 is a product incubated within Entangled Forge; it is not another name for Entangled Forge's consulting business.
@@ -88,10 +93,13 @@ def finalize_discovery(root: Path, site_url: str, preview: bool, translations: d
         for key, value in (('description', copy['description']), ('og:title', copy['title']), ('og:description', copy['description'])):
             attr = 'property' if key.startswith('og:') else 'name'
             html = replace_one(r'<meta ' + attr + '="' + re.escape(key) + r'"[^>]*>', f'<meta {attr}="{key}" content="{escape(value, quote=True)}">', html)
-        old = translations[lang]['intro']
-        if html.count(old) != 1:
-            raise ValueError(f'{lang}: expected exactly one visible hero introduction')
-        html = html.replace(old, escape(copy['intro']), 1)
+        # Keep current public messaging in COPY. The solo note appears in the
+        # app collection and footer; the invitation appears beside the form.
+        for key, expected_count in (('intro', 1), ('solonote', 2), ('contacttext', 1)):
+            old = translations[lang][key]
+            if html.count(old) != expected_count:
+                raise ValueError(f'{lang}: expected {expected_count} occurrences of {key}')
+            html = html.replace(old, escape(copy[key]))
         graph = {
             '@context': 'https://schema.org',
             '@graph': [
@@ -136,13 +144,20 @@ def validate_discovery(output: Path, origin: str, preview: bool) -> None:
         assert ('noindex' in p.meta.get('robots', '')) == preview, (lang, 'indexability')
         assert p.meta['description'] == COPY[lang]['description'], (lang, 'description')
         assert escape(COPY[lang]['intro']) in text, (lang, 'visible positioning')
+        assert text.count(escape(COPY[lang]['solonote'])) == 2, (lang, 'validated Gmail note in apps and footer')
+        assert text.count(escape(COPY[lang]['contacttext'])) == 1, (lang, 'alpha invitation includes Workspace and solo Gmail')
+        for obsolete in ('compatibility has not yet been validated', 'a few Google Workspace organisations', 'Las pruebas están previstas', 'la compatibilidad aún no fue validada'):
+            assert obsolete not in text, (lang, 'outdated public messaging', obsolete)
         data = re.findall(r'<script type="application/ld\+json">(.*?)</script>', text, re.S)
         assert len(data) == 1, (lang, 'one JSON-LD graph')
         graph = json.loads(data[0])['@graph']
         assert graph[-1]['url'] == origin + prefix and graph[-1]['inLanguage'] == lang
         assert graph[0]['description'] == p.meta['description'], (lang, 'schema and page agree')
         assert p.meta['six7-build'], (lang, 'deployment marker')
-        assert 'solo-note' in text, (lang, 'keep planned solo/Gmail context')
+        assert 'solo-note' in text, (lang, 'keep validated solo/Gmail context')
+    index = (output / 'llms.txt').read_text(encoding='utf-8')
+    assert COPY['en']['solonote'] in index, 'Visible Gmail status and discovery index agree'
+    assert 'compatibility has not yet been validated' not in index, 'No obsolete Gmail claim in discovery index'
     robot = RobotFileParser()
     robot.parse((output / 'robots.txt').read_text().splitlines())
     for agent in BOTS:
@@ -158,4 +173,4 @@ def validate_discovery(output: Path, origin: str, preview: bool) -> None:
     for path in ('thank-you/index.html', 'es/gracias/index.html', '404.html'):
         if (output / path).exists():
             assert 'noindex' in (output / path).read_text(), (path, 'utility page noindex')
-    print('Discovery checks passed: canonical, EN/ES/x-default, visible positioning, JSON-LD, robots, sitemap and release marker.')
+    print('Discovery checks passed: canonical, EN/ES/x-default, visible positioning, Gmail validation, alpha invitation, JSON-LD, robots, sitemap and release marker.')
