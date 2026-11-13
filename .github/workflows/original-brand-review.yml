@@ -1,0 +1,61 @@
+name: Verify original-brand light logo
+on:
+  push:
+    branches: [review/original-brand-20261113]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Check actual public image bytes and both language pages
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, re, time
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from urllib.parse import urljoin
+          from scripts.original_brand import derive_light, MASTER_SHA256
+          expected_release='9803c94d33be282cf8120dfae5d838dd41d3b566'
+          master=Path('dist/assets/six7-logo.png').read_bytes()
+          assert hashlib.sha256(master).hexdigest()==MASTER_SHA256
+          light,quality=derive_light(master)
+          light_sha=hashlib.sha256(light).hexdigest()
+          def get(url):
+              with urlopen(Request(url,headers={'User-Agent':'Six7-original-brand-verification','Cache-Control':'no-cache'}),timeout=20) as r:
+                  return r.read()
+          report={'expected_release':expected_release,'expected_light_sha256':light_sha,'dark_sha256':MASTER_SHA256,'quality':quality,'pages':[]}
+          for prefix in ('/','/es/'):
+              url='https://six7.work'+prefix
+              html=get(url+'?brand-qa='+str(time.time_ns())).decode()
+              logos=re.findall(r'<img\b[^>]*class="logo-light"[^>]*>',html)
+              assert len(logos)==2, (url,'header/footer')
+              for tag in logos:
+                  src=re.search(r'src="([^"]+)"',tag).group(1)
+                  assert 'v=origami-'+light_sha[:12] in src,(url,'cache version')
+                  assert 'width="1200"' in tag and 'height="487"' in tag
+                  assert hashlib.sha256(get(urljoin(url,src))).hexdigest()==light_sha,(url,'live light image')
+              assert 'content="'+expected_release+'"' in html,(url,'release')
+              assert hashlib.sha256(get(urljoin(url,'/assets/six7-logo.png'))).hexdigest()==MASTER_SHA256,(url,'dark original')
+              data=json.loads(re.search(r'<script id="app-data" type="application/json">(.*?)</script>',html,re.S).group(1))
+              counts=dict(zip(data['keys'],map(len,data['screens'])))
+              assert counts=={'crm':5,'kb':6,'sd':9,'cp':5}
+              report['pages'].append({'url':url,'header_and_footer_use_source_derived_light':True,'light_image_matches_byte_for_byte':True,'dark_original_unchanged':True,'release_matches':True,'carousel_counts':counts})
+          public_quality=json.loads(get('https://six7.work/assets/six7-brand-quality.json'))
+          assert public_quality['light_sha256']==light_sha
+          assert public_quality['source_sha256']==MASTER_SHA256
+          report['public_quality_report_matches']=True
+          report['verified_at_utc']=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
+          Path('original-brand-production-verification.json').write_text(json.dumps(report,indent=2))
+          print(json.dumps(report,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: original-brand-production-verification
+          path: original-brand-production-verification.json
+          retention-days: 7
