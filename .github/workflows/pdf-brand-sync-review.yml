@@ -16,59 +16,30 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - name: Install maintenance-only PDF renderer
+      - name: Install maintenance-only renderers
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq fonts-urw-base35
-          python -m pip install 'weasyprint==68.0' 'PyMuPDF==1.26.3'
-      - name: Synchronize one-pager source copy
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import shutil
-          from scripts.discovery import COPY
-          root=Path('.')
-          evidence=root/'pdf-brand-evidence'
-          (evidence/'before').mkdir(parents=True,exist_ok=True)
-          changes={
-              'en':{
-                  'Six7 is in alpha. We’re inviting a few Google Workspace organisations to shape it with us.':COPY['en']['contacttext'],
-                  'Solo businesses: CRM and Kanban will be tested with personal Gmail accounts. Compatibility has not yet been validated.':'Solo businesses: '+COPY['en']['solonote'],
-              },
-              'es':{
-                  'Six7 está en alfa. Buscamos organizaciones de Google Workspace para darle forma con nosotros.':COPY['es']['contacttext'],
-                  'Empresas unipersonales: se probarán CRM y Kanban con cuentas personales de Gmail. La compatibilidad aún no fue validada.':'Empresas unipersonales: '+COPY['es']['solonote'],
-              },
-          }
-          for lang,pairs in changes.items():
-              shutil.copy2(root/'dist/assets'/f'six7-one-pager-{lang}.pdf',evidence/'before'/f'six7-one-pager-{lang}.pdf')
-              path=root/'one-pagers'/f'{lang}.html'
-              html=path.read_text(encoding='utf-8')
-              for before,after in pairs.items():
-                  if before in html:
-                      assert html.count(before)==1
-                      html=html.replace(before,after)
-                  else:
-                      assert after in html,(lang,'unexpected source')
-              path.write_text(html,encoding='utf-8')
-          PY
+          python -m pip install 'weasyprint==68.0' 'PyMuPDF==1.26.3' 'Pillow==11.3.0'
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: python scripts/render_one_pagers.py
+      - run: python scripts/prepare_site_icons.py
       - name: Store candidate binaries on the review branch only
         run: |
           git config user.name 'Six7 artifact preparation'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add one-pagers/en.html one-pagers/es.html one-pagers/release.json
+          git add one-pagers/release.json mockup-sources/brand
           git add -f dist/assets/six7-one-pager-en.pdf dist/assets/six7-one-pager-es.pdf dist/assets/six7-one-pager-en-es.pdf
-          git commit -m 'Refresh PDF downloads with validated Gmail compatibility and inclusive alpha invitation'
+          git diff --staged --quiet || git commit -m 'Prepare source-derived S7 icons and current bilingual PDFs'
           git push origin HEAD:review/pdf-brand-sync-20261113
           git rev-parse HEAD > pdf-brand-evidence/candidate-commit.txt
           git ls-tree -r HEAD > pdf-brand-evidence/candidate-tree.txt
-      - name: Preserve the exact source for independent visual review
+      - name: Preserve exact source and browser icon previews
         if: always()
         run: |
-          mkdir -p pdf-brand-evidence
+          mkdir -p pdf-brand-evidence/icons
+          cp mockup-sources/brand/* pdf-brand-evidence/icons/ || true
           tar --exclude=.git --exclude=pdf-brand-evidence -czf /tmp/candidate-source.tar.gz .
           mv /tmp/candidate-source.tar.gz pdf-brand-evidence/candidate-source.tar.gz
       - uses: actions/upload-artifact@v4
