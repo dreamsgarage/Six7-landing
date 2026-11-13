@@ -1,50 +1,112 @@
-name: Prepare PDF and brand synchronization
+name: Verify published PDFs and original brand
 on:
   push:
     branches: [review/pdf-brand-sync-20261113]
     paths: [.github/workflows/pdf-brand-sync-review.yml]
 permissions:
-  contents: write
+  contents: read
 jobs:
-  prepare:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: be0dee99cf0f5f67125918a12745bd720dbf2260
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - name: Install maintenance-only renderers
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-urw-base35
-          python -m pip install 'weasyprint==68.0' 'PyMuPDF==1.26.3' 'Pillow==11.3.0'
+      - run: python -m pip install 'PyMuPDF==1.26.3'
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: python scripts/render_one_pagers.py
-      - run: python scripts/prepare_site_icons.py
-      - name: Store candidate binaries on the review branch only
+        env:
+          COMMIT_REF: be0dee99cf0f5f67125918a12745bd720dbf2260
+      - name: Verify live page references and download the actual published assets
         run: |
-          git config user.name 'Six7 artifact preparation'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add one-pagers/release.json mockup-sources/brand
-          git add -f dist/assets/six7-one-pager-en.pdf dist/assets/six7-one-pager-es.pdf dist/assets/six7-one-pager-en-es.pdf
-          git diff --staged --quiet || git commit -m 'Prepare source-derived S7 icons and current bilingual PDFs'
-          git push origin HEAD:review/pdf-brand-sync-20261113
-          git rev-parse HEAD > pdf-brand-evidence/candidate-commit.txt
-          git ls-tree -r HEAD > pdf-brand-evidence/candidate-tree.txt
-      - name: Preserve exact source and browser icon previews
-        if: always()
-        run: |
-          mkdir -p pdf-brand-evidence/icons
-          cp mockup-sources/brand/* pdf-brand-evidence/icons/ || true
-          tar --exclude=.git --exclude=pdf-brand-evidence -czf /tmp/candidate-source.tar.gz .
-          mv /tmp/candidate-source.tar.gz pdf-brand-evidence/candidate-source.tar.gz
+          python - <<'PY'
+          from pathlib import Path
+          from html.parser import HTMLParser
+          from urllib.request import Request,urlopen
+          from urllib.parse import urljoin
+          import hashlib,json,re,time,fitz
+          from scripts.discovery import COPY
+          EXPECTED='be0dee99cf0f5f67125918a12745bd720dbf2260'
+          root=Path('.')
+          output=Path('production-evidence');output.mkdir(exist_ok=True)
+          release=json.loads((root/'one-pagers/release.json').read_text())
+          digest=lambda b:hashlib.sha256(b).hexdigest()
+          norm=lambda s:re.sub(r'\s+',' ',s).strip()
+          def fetch(url):
+              req=Request(url,headers={'User-Agent':'Six7-Brand-PDF-Verification','Cache-Control':'no-cache'})
+              with urlopen(req,timeout=20) as r:
+                  assert r.status==200,(url,r.status)
+                  return r.read()
+          class Page(HTMLParser):
+              def __init__(self):
+                  super().__init__();self.links=[];self.images=[];self.meta={}
+              def handle_starttag(self,tag,attrs):
+                  a=dict(attrs)
+                  if tag=='a':self.links.append(a.get('href',''))
+                  if tag=='img':self.images.append(a)
+                  if tag=='meta':self.meta[a.get('name')]=a.get('content')
+          checks={};errors=[]
+          for attempt in range(4):
+              checks={};errors=[]
+              try:
+                  for lang,path in [('en','/'),('es','/es/')]:
+                      url='https://six7.work'+path
+                      html=fetch(url+'?asset-release-check='+str(int(time.time()))).decode()
+                      page=Page();page.feed(html)
+                      assert page.meta.get('six7-build')==EXPECTED,(lang,'wrong deployed release',page.meta.get('six7-build'))
+                      checks[lang+'_release']=EXPECTED
+                      for theme,expected in [('light',release['light_logo_sha256']),('dark',release['dark_master_sha256'])]:
+                          images=[a for a in page.images if a.get('class')=='logo-'+theme]
+                          assert len(images)==2,(lang,theme,'header/footer references')
+                          for image in images:
+                              assert digest(fetch(urljoin(url,image['src'])))==expected,(lang,theme,'logo bytes')
+                          checks[lang+'_'+theme+'_header_footer_exact']=True
+                      for pdf_lang,entry in release['documents'].items():
+                          link='/assets/'+entry['file']+'?v='+entry['sha256'][:12]
+                          assert link in page.links,(lang,pdf_lang,'versioned PDF link')
+                      assert '/favicon.svg?v=' in html and '/favicon.png?v=' in html and '/favicon.ico?v=' in html
+                      data=json.loads(re.search(r'<script id="app-data" type="application/json">(.*?)</script>',html,re.S).group(1))
+                      assert list(map(len,data['screens']))==[5,6,9,5],(lang,'carousel screens')
+                      checks[lang+'_downloads_and_carousel']=True
+                  for lang,entry in release['documents'].items():
+                      base='https://six7.work/assets/'+entry['file']
+                      raw=fetch(base+'?v='+entry['sha256'][:12])
+                      assert digest(raw)==entry['sha256'],(lang,'versioned PDF bytes')
+                      assert digest(fetch(base))==entry['sha256'],(lang,'stable PDF alias bytes')
+                      with fitz.open(stream=raw,filetype='pdf') as doc:
+                          assert len(doc)==1,(lang,'one-page PDF')
+                          text=norm(doc[0].get_text())
+                          for key in ('solonote','contacttext'):assert norm(COPY[lang][key]) in text,(lang,key)
+                          assert not any(s in text.lower() for s in ['will be tested','has not yet been validated','se probarán','aún no fue validada'])
+                      (output/entry['file']).write_bytes(raw)
+                      checks[lang+'_live_pdf']={'sha256':digest(raw),'pages':1,'validated_gmail_copy':True,'inclusive_alpha_invitation':True}
+                  entry=release['bilingual']
+                  raw=fetch('https://six7.work/assets/'+entry['file'])
+                  assert digest(raw)==entry['sha256'],'bilingual PDF bytes'
+                  checks['bilingual_pdf_updated']=True
+                  for filename in ('favicon.svg','favicon.png','favicon.ico'):
+                      actual=fetch('https://six7.work/'+filename)
+                      assert actual==(root/'dist'/filename).read_bytes(),(filename,'icon bytes')
+                      checks[filename+'_exact']=True
+                  checks['all_verified']=True
+              except Exception as error:
+                  errors.append(str(error))
+              if not errors:break
+              if attempt<3:time.sleep(8)
+          report={'verified_at_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'main_commit':EXPECTED,'checks':checks,'errors':errors}
+          (output/'verification.json').write_text(json.dumps(report,indent=2)+'\n')
+          print(json.dumps(report,indent=2))
+          assert not errors,errors
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: six7-pdf-brand-review
-          path: pdf-brand-evidence/
+          name: six7-published-brand-and-pdfs
+          path: production-evidence/
           retention-days: 7
