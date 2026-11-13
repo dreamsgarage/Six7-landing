@@ -1,0 +1,113 @@
+name: Prepare PDF and brand synchronization
+on:
+  push:
+    branches: [review/pdf-brand-sync-20261113]
+    paths: [.github/workflows/pdf-brand-sync-review.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install maintenance-only PDF renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-urw-base35
+          python -m pip install 'weasyprint==68.0' 'PyMuPDF==1.26.3'
+      - name: Synchronize the existing one-pager source copy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import shutil
+          from scripts.discovery import COPY
+          root=Path('.')
+          evidence=root/'pdf-brand-evidence'
+          (evidence/'before').mkdir(parents=True,exist_ok=True)
+          for lang in ('en','es'):
+              shutil.copy2(root/'dist/assets'/f'six7-one-pager-{lang}.pdf',evidence/'before'/f'six7-one-pager-{lang}.pdf')
+          changes={
+              'en':{
+                  'Six7 is in alpha. We’re inviting a few Google Workspace organisations to shape it with us.':COPY['en']['contacttext'],
+                  'Solo businesses: CRM and Kanban will be tested with personal Gmail accounts. Compatibility has not yet been validated.':'Solo businesses: '+COPY['en']['solonote'],
+              },
+              'es':{
+                  'Six7 está en alfa. Buscamos organizaciones de Google Workspace para darle forma con nosotros.':COPY['es']['contacttext'],
+                  'Empresas unipersonales: se probarán CRM y Kanban con cuentas personales de Gmail. La compatibilidad aún no fue validada.':'Empresas unipersonales: '+COPY['es']['solonote'],
+              },
+          }
+          for lang,pairs in changes.items():
+              path=root/'one-pagers'/f'{lang}.html'
+              html=path.read_text(encoding='utf-8')
+              for before,after in pairs.items():
+                  assert html.count(before)==1,(lang,before)
+                  html=html.replace(before,after)
+              path.write_text(html,encoding='utf-8')
+          PY
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Render source-faithful PDFs and validate their visible text
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from weasyprint import HTML,CSS
+          import weasyprint,fitz,hashlib,json,re,shutil
+          from scripts.discovery import COPY
+          root=Path('.').resolve()
+          assets=root/'dist/assets'
+          evidence=root/'pdf-brand-evidence'
+          (evidence/'after').mkdir(exist_ok=True)
+          digest=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+          norm=lambda s:re.sub(r'\s+',' ',s).strip()
+          manifest={'version':1,'renderer':'WeasyPrint '+weasyprint.__version__,'print_css_sha256':digest(root/'one-pagers/print.css'),'dark_master_sha256':digest(assets/'six7-logo.png'),'light_logo_sha256':digest(assets/'six7-logo-light.png'),'documents':{}}
+          forbidden=('will be tested','has not yet been validated','a few Google Workspace','se probarán','aún no fue validada')
+          for lang in ('en','es'):
+              source=root/'one-pagers'/f'{lang}.html'
+              target=assets/f'six7-one-pager-{lang}.pdf'
+              HTML(filename=str(source)).write_pdf(target,stylesheets=[CSS(filename=str(root/'one-pagers/print.css'))])
+              with fitz.open(target) as doc:
+                  assert len(doc)==1,(lang,'must remain one page',len(doc))
+                  page=doc[0]
+                  assert abs(page.rect.width-595.276)<1 and abs(page.rect.height-841.89)<1,(lang,'A4 size')
+                  text=norm(page.get_text())
+                  for key in ('solonote','contacttext'):
+                      assert norm(COPY[lang][key]) in text,(lang,key,text)
+                  assert not any(term.casefold() in text.casefold() for term in forbidden),(lang,'obsolete PDF copy')
+                  assert len(page.get_images())>=1,(lang,'original logo missing')
+                  page.get_pixmap(matrix=fitz.Matrix(1.5,1.5)).save(evidence/'after'/f'{lang}.png')
+                  (evidence/'after'/f'{lang}.txt').write_text(text,encoding='utf-8')
+              shutil.copy2(target,evidence/'after'/target.name)
+              manifest['documents'][lang]={'file':target.name,'sha256':digest(target),'source_sha256':digest(source),'pages':1,'gmail_validated':True,'inclusive_alpha_invitation':True}
+          bilingual=assets/'six7-one-pager-en-es.pdf'
+          with fitz.open() as combined:
+              for lang in ('en','es'):
+                  with fitz.open(assets/f'six7-one-pager-{lang}.pdf') as doc:combined.insert_pdf(doc)
+              combined.save(bilingual,garbage=4,deflate=True)
+          manifest['bilingual']={'file':bilingual.name,'sha256':digest(bilingual),'pages':2}
+          (root/'one-pagers/release.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+          (evidence/'release.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(manifest,indent=2))
+          PY
+      - name: Store candidate artifacts on the review branch only
+        run: |
+          git config user.name 'Six7 artifact preparation'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add one-pagers/en.html one-pagers/es.html one-pagers/release.json
+          git add -f dist/assets/six7-one-pager-en.pdf dist/assets/six7-one-pager-es.pdf dist/assets/six7-one-pager-en-es.pdf
+          git commit -m 'Refresh PDF downloads with validated Gmail compatibility and inclusive alpha invitation'
+          git push origin HEAD:review/pdf-brand-sync-20261113
+          git rev-parse HEAD > pdf-brand-evidence/candidate-commit.txt
+          git ls-tree -r HEAD > pdf-brand-evidence/candidate-tree.txt
+          tar --exclude=.git --exclude=pdf-brand-evidence -czf pdf-brand-evidence/candidate-source.tar.gz .
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: six7-pdf-brand-review
+          path: pdf-brand-evidence/
+          retention-days: 7
