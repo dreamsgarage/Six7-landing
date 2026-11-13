@@ -62,3 +62,6 @@ if not preview:
 # Discovery metadata and visible positioning share one validated source.
 from scripts.discovery import finalize_discovery
 finalize_discovery(root, site_url, preview, T)
+# Restore light-theme brand fidelity from the approved dark origami master.
+from scripts.original_brand import install_original_brand
+install_original_brand(root)
