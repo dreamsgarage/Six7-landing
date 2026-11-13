@@ -7,7 +7,7 @@
   "documents": {
     "en": {
       "file": "six7-one-pager-en.pdf",
-      "sha256": "a2d5b3552b176411c5663c95941f04b2c3b00ea2b78829d9f5c6906a60a44fed",
+      "sha256": "c8a467ec656c4750bb41bb199f17b8c3f4ec52a51a04ca3a0835a2a8d2031066",
       "source_sha256": "f38aef81243477693ff7c4192160e8ae5f1ae126d159345a670ed98d658e94a3",
       "pages": 1,
       "gmail_validated": true,
@@ -15,7 +15,7 @@
     },
     "es": {
       "file": "six7-one-pager-es.pdf",
-      "sha256": "74d912aac9ca98768ba564c3dea1c5bbb20a6ca9781a2a8ac54c71af428c6d42",
+      "sha256": "3a76bd3abbd920bcee3036ec57be554d9206ec6c4bb48d6936e2fe1cdb0980a9",
       "source_sha256": "32c93a564b969d6e39d5192fb6d44009e6da16fa2148500398fa2455aed74833",
       "pages": 1,
       "gmail_validated": true,
@@ -24,7 +24,7 @@
   },
   "bilingual": {
     "file": "six7-one-pager-en-es.pdf",
-    "sha256": "aa3d775d6fb3f8ec0c274187bb141147859c847b57ad6a7f85f175249d56e801",
+    "sha256": "9cc077ba77f672e73e4e47d9160962f0acb670b5170b886578e04c4e02c67c4a",
     "pages": 2
   }
 }
