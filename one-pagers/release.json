@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "renderer": "WeasyPrint 68.0",
+  "print_css_sha256": "9b5162107ce4626e98004be9702e4a7a7d90827db4125637b17a22dc3806cccb",
+  "dark_master_sha256": "37e48955832e2dde50cb1fa67bdebf2ecaeb249a6d9beeb3b5545edd6f8a66cb",
+  "light_logo_sha256": "b8c22e4feb4a2b4170afc8b6e8f1240432494e9f3765ed276c20f9269e5e3196",
+  "documents": {
+    "en": {
+      "file": "six7-one-pager-en.pdf",
+      "sha256": "c8a467ec656c4750bb41bb199f17b8c3f4ec52a51a04ca3a0835a2a8d2031066",
+      "source_sha256": "f38aef81243477693ff7c4192160e8ae5f1ae126d159345a670ed98d658e94a3",
+      "pages": 1,
+      "gmail_validated": true,
+      "inclusive_alpha_invitation": true
+    },
+    "es": {
+      "file": "six7-one-pager-es.pdf",
+      "sha256": "3a76bd3abbd920bcee3036ec57be554d9206ec6c4bb48d6936e2fe1cdb0980a9",
+      "source_sha256": "32c93a564b969d6e39d5192fb6d44009e6da16fa2148500398fa2455aed74833",
+      "pages": 1,
+      "gmail_validated": true,
+      "inclusive_alpha_invitation": true
+    }
+  },
+  "bilingual": {
+    "file": "six7-one-pager-en-es.pdf",
+    "sha256": "9cc077ba77f672e73e4e47d9160962f0acb670b5170b886578e04c4e02c67c4a",
+    "pages": 2
+  }
+}

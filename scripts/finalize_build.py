@@ -65,3 +65,6 @@ finalize_discovery(root, site_url, preview, T)
 # Restore light-theme brand fidelity from the approved dark origami master.
 from scripts.original_brand import install_original_brand
 install_original_brand(root)
+# Publish the reviewed PDFs and original-art browser icons without runtime renderers.
+from scripts.install_release_assets import install_release_assets
+install_release_assets(root)

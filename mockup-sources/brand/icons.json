@@ -1,0 +1,16 @@
+{
+  "light": {
+    "file": "s7-origami-light-96.png",
+    "sha256": "ae5fa79704821866180841db80290a217489a9d354aee574bfdbf7666d3f82c0",
+    "width": 96,
+    "height": 96
+  },
+  "dark": {
+    "file": "s7-origami-dark-96.png",
+    "sha256": "5e4a22982f717bf4c5fce1b736505d98e5929ffd2942dd0009a975ef59467943",
+    "width": 96,
+    "height": 96
+  },
+  "source_dark_sha256": "37e48955832e2dde50cb1fa67bdebf2ecaeb249a6d9beeb3b5545edd6f8a66cb",
+  "source_light_sha256": "b8c22e4feb4a2b4170afc8b6e8f1240432494e9f3765ed276c20f9269e5e3196"
+}
