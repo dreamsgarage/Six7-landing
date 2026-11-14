@@ -5,6 +5,7 @@ on:
     paths:
       - 'one-pagers/en.html'
       - 'one-pagers/es.html'
+      - 'one-pagers/print.css'
       - 'scripts/render_one_pagers.py'
       - '.github/workflows/regenerate-contact-pdfs.yml'
 permissions:
