@@ -1,0 +1,80 @@
+name: Regenerate Six7 contact PDFs (one-time staging)
+on:
+  push:
+    branches: [six7-email-contact-20261114]
+    paths:
+      - 'one-pagers/en.html'
+      - 'one-pagers/es.html'
+      - 'scripts/render_one_pagers.py'
+      - '.github/workflows/regenerate-contact-pdfs.yml'
+permissions:
+  contents: write
+jobs:
+  regenerate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install PDF font and renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-urw-base35
+          python -m pip install weasyprint==68.0 pymupdf==1.26.3
+      - name: Regenerate both A4 PDFs and bilingual archive
+        run: python scripts/render_one_pagers.py
+      - name: Validate full website with versioned PDF downloads
+        run: |
+          npm ci --ignore-scripts
+          npm run build
+          python3 scripts/check_contexts.py
+      - name: Verify page format, mailto hyperlinks and rendered layout
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import fitz
+          root=Path('dist/assets')
+          for lang in ('en','es'):
+              pdf=root/f'six7-one-pager-{lang}.pdf'
+              with fitz.open(pdf) as doc:
+                  assert len(doc)==1,(lang,'PDF must fit on one A4 page')
+                  page=doc[0]
+                  assert (abs(page.rect.width-595.276)<1 and abs(page.rect.height-841.89)<1), lang
+                  assert 'hey@six7.work' in page.get_text(),(lang,'missing contact')
+                  assert any(link.get('uri')=='mailto:hey@six7.work' for link in page.get_links()),(lang,'missing clickable email')
+                  # A sample at 150dpi supports visual QA after the workflow completes.
+                  page.get_pixmap(matrix=fitz.Matrix(2,2)).save(f'pdf-brand-evidence/after/{lang}-contact.png')
+          print('Both PDFs: one A4 page, clickable mailto and rendered verification PNGs.')
+          PY
+      - name: Attach PDF previews for verification
+        uses: actions/upload-artifact@v4
+        with:
+          name: six7-email-contact-pdf-previews
+          path: |
+            pdf-brand-evidence/after/en-contact.png
+            pdf-brand-evidence/after/es-contact.png
+          retention-days: 14
+      - name: Commit verified generated downloads
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add one-pagers/release.json pdf-brand-evidence/release.json
+          git add dist/assets/six7-one-pager-en.pdf dist/assets/six7-one-pager-es.pdf dist/assets/six7-one-pager-en-es.pdf dist/assets/six7-downloads.json
+          git add dist/index.html dist/es/index.html
+          git add -A dist/static/
+          git diff --cached --stat
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+          else
+            git commit -m "Release verified EN/ES contact PDFs and generated website"
+            git push origin HEAD:six7-email-contact-20261114
+          fi

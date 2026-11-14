@@ -37,6 +37,8 @@ for name,lang in (('index.html','en'),('es/index.html','es')):
  assert 'Commodore 64' in text and 'Claude' in text and 'Omarchy' in text,(name,'founder and build story')
  assert 'entangledforge.com' not in text.lower(),(name,'remove collaborator links')
  assert len(page.forms)==1,(name,'one alpha interest form')
+ assert text.count('href="mailto:hey@six7.work"') == 2,(name,'email links in contact and footer')
+ assert 'contact-email' in text and 'footer-contact-email' in text,(name,'visible direct-contact options')
  form=page.forms[0]
  assert form.get('name')==f'six7-alpha-{lang}' and form.get('method')=='POST' and form.get('data-netlify')=='true',(name,'Netlify form declaration')
  assert form.get('netlify-honeypot')=='bot-field',(name,'honeypot field')

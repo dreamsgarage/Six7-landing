@@ -87,3 +87,11 @@ html[data-theme=light] .story-chapter--collab .collab-logo-row .partner-logo img
  .story-chapter--collab .collab-logo-row .partner-omarchy img{width:70px}
  .story-chapter--collab .collab-logo-row .partner-ef img{width:38px}
 }
+
+/* Institutional contact: a quiet email alternative to the existing alpha form. */
+.contact-right > .contact-email { margin:20px 0 0; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; line-height:1.65; max-width:none; }
+.contact-email a { color:var(--ink); font-weight:600; text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1px; }
+.footer-brand-copy { display:flex; flex-direction:column; align-items:flex-start; gap:3px; }
+.footer-contact-email { color:inherit; text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; font-size:12px; }
+.contact-email a:hover, .footer-contact-email:hover { color:var(--orange); }
+@media(max-width:600px){ .contact-right > .contact-email { font-size:13px; } .footer-brand { gap:13px; } .footer-brand-copy { min-width:0; } .footer-contact-email { overflow-wrap:anywhere; } }

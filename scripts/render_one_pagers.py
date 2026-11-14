@@ -55,6 +55,8 @@ def render():
                 assert norm(COPY[lang][key]) in text, (lang, key, 'missing from rendered PDF')
             assert not any(term.casefold() in text.casefold() for term in forbidden), (lang, 'obsolete PDF copy')
             assert page.get_images(), (lang, 'original logo missing')
+            assert 'hey@six7.work' in text, (lang, 'official contact missing from PDF')
+            assert any(link.get('uri') == 'mailto:hey@six7.work' for link in page.get_links()), (lang, 'email mailto annotation missing from PDF')
         manifest['documents'][lang] = {
             'file': target.name, 'sha256': digest(target),
             'source_sha256': digest(source), 'pages': 1,

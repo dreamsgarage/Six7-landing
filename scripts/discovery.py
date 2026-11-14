@@ -103,7 +103,7 @@ def finalize_discovery(root: Path, site_url: str, preview: bool, translations: d
         graph = {
             '@context': 'https://schema.org',
             '@graph': [
-                {'@type': 'Organization', '@id': OFFICIAL + '/#organization', 'name': 'Six7', 'url': OFFICIAL + '/', 'description': copy['description']},
+                {'@type': 'Organization', '@id': OFFICIAL + '/#organization', 'name': 'Six7', 'url': OFFICIAL + '/', 'description': copy['description'], 'email': 'hey@six7.work', 'contactPoint': {'@type': 'ContactPoint', 'contactType': 'general inquiries', 'email': 'hey@six7.work', 'availableLanguage': ['en', 'es']}},
                 {'@type': 'WebSite', '@id': OFFICIAL + '/#website', 'name': 'Six7', 'url': OFFICIAL + '/', 'inLanguage': ['en', 'es'], 'publisher': {'@id': OFFICIAL + '/#organization'}},
                 {'@type': 'WebPage', '@id': origin + prefix + '#webpage', 'url': origin + prefix, 'name': copy['title'], 'description': copy['description'], 'inLanguage': lang, 'isPartOf': {'@id': OFFICIAL + '/#website'}, 'about': {'@id': OFFICIAL + '/#organization'}},
             ],
@@ -153,6 +153,7 @@ def validate_discovery(output: Path, origin: str, preview: bool) -> None:
         graph = json.loads(data[0])['@graph']
         assert graph[-1]['url'] == origin + prefix and graph[-1]['inLanguage'] == lang
         assert graph[0]['description'] == p.meta['description'], (lang, 'schema and page agree')
+        assert graph[0]['email'] == 'hey@six7.work' and graph[0]['contactPoint']['email'] == 'hey@six7.work', (lang, 'official contact metadata')
         assert p.meta['six7-build'], (lang, 'deployment marker')
         assert 'solo-note' in text, (lang, 'keep validated solo/Gmail context')
     index = (output / 'llms.txt').read_text(encoding='utf-8')
