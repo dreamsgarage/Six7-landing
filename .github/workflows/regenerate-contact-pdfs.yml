@@ -31,6 +31,8 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq fonts-urw-base35
           python -m pip install weasyprint==68.0 pymupdf==1.26.3
+      - name: Restore the approved light-logo PDF master
+        run: python -c "from pathlib import Path; from scripts.original_brand import install_original_brand; install_original_brand(Path.cwd())"
       - name: Regenerate both A4 PDFs and bilingual archive
         run: python scripts/render_one_pagers.py
       - name: Validate full website with versioned PDF downloads
