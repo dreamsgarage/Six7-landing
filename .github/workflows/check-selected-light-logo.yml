@@ -1,0 +1,42 @@
+name: Verify published approved Six7 light logo
+on:
+  push:
+    branches: [fix/use-attached-light-logo-20261114]
+    paths: [.github/workflows/check-selected-light-logo.yml]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Verify live image bytes and both language pages
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, time, urllib.request
+          origin='https://six7.work'
+          name='six7-light-approved-ea3509fe21a4.png'
+          expected='ea3509fe21a4119d26d8576e255a3bfd6739c399d492d2d5b4df255078a87d45'
+          release='c9d96207171d1555561e175b8c4d3e4947718ac3'
+          def get(path):
+              req=urllib.request.Request(origin+path,headers={'User-Agent':'Six7-Brand-Verification/1.0'})
+              with urllib.request.urlopen(req,timeout=20) as response:
+                  assert response.status==200,(path,response.status)
+                  return response.read()
+          for attempt in range(10):
+              try:
+                  img=get('/assets/'+name)
+                  actual=hashlib.sha256(img).hexdigest()
+                  assert actual==expected,('live logo differs',actual)
+                  for path in ('/','/es/'):
+                      html=get(path).decode('utf-8')
+                      assert html.count('src="/assets/'+name+'"')==2,(path,'header and footer logos')
+                      assert html.count('class="logo-dark" src="/assets/six7-logo.png"')==2,(path,'dark logos modified')
+                      assert 'name="six7-build" content="'+release+'"' in html,(path,'release mismatch')
+                  print('PASS: live EN and ES header/footer use exact user-uploaded 1968x799 PNG; SHA256 '+actual+'; dark logo unchanged; release '+release)
+                  break
+              except Exception:
+                  if attempt==9:raise
+                  time.sleep(4)
+          PY
