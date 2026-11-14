@@ -179,6 +179,19 @@ def install_original_brand(root):
     # Replace the legacy public alias as well, so callers do not get the old flat mark.
     (assets/'six7-logo-light.png').write_bytes(light)
     (assets/filename).write_bytes(light)
+    # The approved upload is the visible light-theme brand: use its exact PNG
+    # bytes without regenerating, recolouring, or changing the origami folds.
+    approved = (root/'brand'/'six7-light-approved-esta.png').read_bytes()
+    approved_sha = hashlib.sha256(approved).hexdigest()
+    if approved_sha != 'ea3509fe21a4119d26d8576e255a3bfd6739c399d492d2d5b4df255078a87d45' or approved[:8] != b'\x89PNG\r\n\x1a\n':
+        raise ValueError('Approved light-theme brand master differs from the supplied image')
+    approved_size = struct.unpack('>II', approved[16:24])
+    if approved_size != (1968,799):
+        raise ValueError('Approved light-theme PNG dimensions differ from the supplied original')
+    approved_name = 'six7-light-approved-'+approved_sha[:12]+'.png'
+    (assets/approved_name).write_bytes(approved)
+    public_url = '/assets/'+approved_name
+    report.update({'approved_light_source_sha256':approved_sha,'approved_light_dimensions':approved_size,'approved_light_is_exact_upload':True,'visible_brand_url':public_url})
     report.update({'source_sha256':MASTER_SHA256,'light_sha256':digest,'public_url':public_url,'dark_master_unchanged':source.read_bytes()==master})
     for lang,relative in (('en','index.html'),('es','es/index.html')):
         path=output/relative
@@ -186,8 +199,8 @@ def install_original_brand(root):
         def replace_logo(match):
             tag=match.group(0)
             tag=re.sub(r'\bsrc="[^"]*"','src="'+public_url+'"',tag)
-            tag=re.sub(r'\bwidth="\d+"','width="1200"',tag)
-            tag=re.sub(r'\bheight="\d+"','height="487"',tag)
+            tag=re.sub(r'\bwidth="\d+"','width="1968"',tag)
+            tag=re.sub(r'\bheight="\d+"','height="799"',tag)
             return tag
         html,count=re.subn(r'<img\b[^>]*\bclass="logo-light"[^>]*>',replace_logo,html)
         assert count==2,(lang,'Expected header and footer light logos')
@@ -195,7 +208,7 @@ def install_original_brand(root):
         assert html.count('class="logo-dark" src="/assets/six7-logo.png"')==2,(lang,'Keep dark logos')
         path.write_text(html,encoding='utf-8')
     (assets/'six7-brand-quality.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
-    print('Original-brand checks passed: unchanged dark master, source-derived light geometry, original orange, folds and x-to-7 connection; EN/ES header and footer.')
+    print('Original-brand checks passed: approved uploaded light PNG exact, dark master unchanged, EN/ES header and footer.')
     return report
 
 

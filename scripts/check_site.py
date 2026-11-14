@@ -25,7 +25,7 @@ for name,lang in (('index.html','en'),('es/index.html','es')):
  assert text.count('data-theme-choice=')==2,(name,'theme controls')
  assert 'solo-note' in page.ids,(name,'Gmail footnote')
  assert f'/assets/six7-one-pager-{lang}.pdf' in text,(name,'localized PDF link')
- assert 'six7-logo-light.png' in text,(name,'light theme logo')
+ assert 'six7-light-approved-ea3509fe21a4.png' in text,(name,'approved light-theme logo')
  assert 'Entangled Forge' in text and 'alt="Entangled Forge"' in text,(name,'collaboration story and original brand image')
  for logo in ('claude.svg','omarchy.svg','entangled-forge.webp'):
   assert (output/'assets'/'mockups'/logo).is_file(),(name,logo,'supplied logo missing')
